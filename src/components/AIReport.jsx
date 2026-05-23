@@ -498,6 +498,17 @@ export default function AIReport({ report: staticReport, event, language, t }) {
       const data = await res.json();
       setGeneratedReport(data.report);
       setSource(data.source);
+
+      if (typeof window !== 'undefined' && data?.report) {
+        window.dispatchEvent(new CustomEvent('fax-report-generated', {
+          detail: {
+            event,
+            report: data.report,
+            source: data.source,
+            language,
+          },
+        }));
+      }
     } catch {
       // Never show raw errors — fall through silently, keep existing report
       setSource('mock');
@@ -574,4 +585,5 @@ export default function AIReport({ report: staticReport, event, language, t }) {
     </div>
   );
 }
+
 

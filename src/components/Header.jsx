@@ -159,6 +159,18 @@ const noNotifsText = {
   id: 'Tidak ada notifikasi baru', th: 'ไม่มีการแจ้งเตือนใหม่'
 };
 
+const reportNotifText = {
+  ko: { done: 'AI 리포트 생성 완료', saving: '예상 절감' },
+  en: { done: 'AI report generated', saving: 'Expected saving' },
+  ja: { done: 'AIレポート生成完了', saving: '予想削減' },
+  zh: { done: 'AI报告生成完成', saving: '预计节省' },
+  fr: { done: 'Rapport IA généré', saving: 'Économie estimée' },
+  es: { done: 'Informe de IA generado', saving: 'Ahorro estimado' },
+  de: { done: 'KI-Bericht generiert', saving: 'Erwartete Einsparung' },
+  vi: { done: 'Báo cáo AI đã tạo', saving: 'Tiết kiệm dự kiến' },
+  id: { done: 'Laporan AI dibuat', saving: 'Estimasi penghematan' },
+  th: { done: 'สร้างรายงาน AI แล้ว', saving: 'การประหยัดโดยประมาณ' },
+};
 const nIconMap = {
   zap: Zap,
   file: FileText,
@@ -214,6 +226,36 @@ export default function Header({ language, setLanguage, t }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Add notification when Gemini/AI report is generated
+  useEffect(() => {
+    function handleGeneratedReportNotif(e) {
+      const detail = e.detail || {};
+      if (detail.language && detail.language !== language) return;
+
+      const labels = reportNotifText[language] || reportNotifText.en;
+      const equipment = detail.event?.equipment || detail.report?.title || 'AI Report';
+      const savings = detail.report?.savings ? ` · ${labels.saving} ${detail.report.savings}` : '';
+
+      const d = new Date();
+      const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+      setNotifList((prev) => [
+        {
+          id: `report-${Date.now()}`,
+          icon: 'file',
+          text: `${labels.done}: ${equipment}${savings}`,
+          time,
+          severity: detail.source === 'gemini' ? 'info' : 'medium',
+        },
+        ...prev,
+      ]);
+
+      setNotifOpen(true);
+    }
+
+    window.addEventListener('fax-report-generated', handleGeneratedReportNotif);
+    return () => window.removeEventListener('fax-report-generated', handleGeneratedReportNotif);
+  }, [language]);
   const currentLang = languageOptions.find((l) => l.code === language);
   const settings = settingsData[language] || settingsData.en;
 
@@ -518,4 +560,5 @@ export default function Header({ language, setLanguage, t }) {
     </header>
   );
 }
+
 
