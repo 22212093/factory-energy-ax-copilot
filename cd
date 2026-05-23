@@ -1,0 +1,2 @@
+      PID    PPID    PGID     WINPID   TTY         UID    STIME COMMAND
+    28360       1   28360      28360  cons0     197609 16:59:41 /usr/bin/ps
