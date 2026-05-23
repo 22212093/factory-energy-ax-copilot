@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+﻿import { useState, useEffect, useRef, useCallback } from 'react';
 import Header from './components/Header';
 import MetricCard from './components/MetricCard';
 import PowerChart from './components/PowerChart';
@@ -46,6 +46,29 @@ function nowHHMMSS() {
   return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
 }
 
+// ─── Responsive helper ─────────────────────────────────
+function useIsMobile(breakpoint = 768) {
+  const getValue = () => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth <= breakpoint;
+  };
+
+  const [isMobile, setIsMobile] = useState(getValue);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(getValue());
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleResize);
+    };
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
 // ─── App ───────────────────────────────────────────────
 export default function App() {
   const [language, setLanguage] = useState('ko');
@@ -69,6 +92,7 @@ export default function App() {
   // Interval ref for simulation (so we can cancel/restart on settings change)
   const simTimerRef = useRef(null);
 
+  const isMobile = useIsMobile(768);
   const t = translations[language];
   const spikeTime = getSpikeTime(chartData);
 
@@ -157,15 +181,28 @@ export default function App() {
 
   return (
     <div
+      id="app-shell"
       className="flex flex-col"
       style={{
-        height: '100vh',
-        overflow: 'hidden',
+        minHeight: isMobile ? '100dvh' : '100vh',
+        height: isMobile ? 'auto' : '100vh',
+        width: '100%',
+        maxWidth: '100%',
+        overflowX: 'hidden',
+        overflowY: isMobile ? 'auto' : 'hidden',
         background: 'var(--color-navy-950)',
       }}
     >
-      {/* ── Header: fixed 44px ── */}
-      <div style={{ height: '44px', flexShrink: 0 }}>
+      {/* ── Header ── */}
+      <div
+        style={{
+          minHeight: '44px',
+          height: isMobile ? 'auto' : '44px',
+          flexShrink: 0,
+          maxWidth: '100%',
+          overflowX: 'hidden',
+        }}
+      >
         <Header
           language={language}
           setLanguage={setLanguage}
@@ -181,34 +218,48 @@ export default function App() {
         />
       </div>
 
-      {/* ── Main content: remaining height ── */}
+      {/* ── Main content ── */}
       <main
+        id="dashboard-main"
         style={{
-          height: 'calc(100vh - 44px)',
-          overflow: 'hidden',
-          padding: '10px 12px',
+          height: isMobile ? 'auto' : 'calc(100vh - 44px)',
+          minHeight: 0,
+          overflowX: 'hidden',
+          overflowY: isMobile ? 'visible' : 'hidden',
+          padding: isMobile ? '10px 10px 18px' : '10px 12px',
           display: 'flex',
-          gap: '12px',
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? '14px' : '12px',
+          width: '100%',
+          maxWidth: '100%',
         }}
       >
-        {/* ── Left column: 66% ── */}
+        {/* ── Left column ── */}
         <div
           style={{
-            width: '66%',
+            width: isMobile ? '100%' : '66%',
+            maxWidth: '100%',
+            minWidth: 0,
             display: 'flex',
             flexDirection: 'column',
-            gap: '10px',
-            overflow: 'hidden',
+            gap: isMobile ? '12px' : '10px',
+            overflowX: 'hidden',
+            overflowY: isMobile ? 'visible' : 'hidden',
           }}
         >
-          {/* Metric cards row: fixed 112px */}
+          {/* Metric cards row */}
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '10px',
-              height: '112px',
+              gridTemplateColumns: isMobile
+                ? 'repeat(2, minmax(0, 1fr))'
+                : 'repeat(4, minmax(0, 1fr))',
+              gap: isMobile ? '10px' : '10px',
+              height: isMobile ? 'auto' : '112px',
+              minHeight: isMobile ? 'auto' : '112px',
               flexShrink: 0,
+              width: '100%',
+              maxWidth: '100%',
             }}
           >
             {metrics.map((m, i) => (
@@ -216,8 +267,18 @@ export default function App() {
             ))}
           </div>
 
-          {/* Power chart: flex-1, fills all remaining height */}
-          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+          {/* Power chart */}
+          <div
+            style={{
+              flex: isMobile ? 'none' : 1,
+              minHeight: 0,
+              height: isMobile ? '430px' : 'auto',
+              overflowX: 'hidden',
+              overflowY: 'hidden',
+              width: '100%',
+              maxWidth: '100%',
+            }}
+          >
             <PowerChart
               t={t}
               threshold={settings.threshold}
@@ -227,18 +288,31 @@ export default function App() {
           </div>
         </div>
 
-        {/* ── Right column: 34% ── */}
+        {/* ── Right column ── */}
         <div
           style={{
-            width: '34%',
+            width: isMobile ? '100%' : '34%',
+            maxWidth: '100%',
+            minWidth: 0,
             display: 'flex',
             flexDirection: 'column',
-            gap: '10px',
-            overflow: 'hidden',
+            gap: isMobile ? '12px' : '10px',
+            overflowX: 'hidden',
+            overflowY: isMobile ? 'visible' : 'hidden',
           }}
         >
-          {/* Anomaly events: fixed 230px — fits exactly 3 cards without scrolling */}
-          <div style={{ height: '230px', flexShrink: 0, overflow: 'hidden' }}>
+          {/* Anomaly events */}
+          <div
+            style={{
+              height: isMobile ? 'auto' : '230px',
+              minHeight: isMobile ? '260px' : 0,
+              flexShrink: 0,
+              overflowX: 'hidden',
+              overflowY: isMobile ? 'visible' : 'hidden',
+              width: '100%',
+              maxWidth: '100%',
+            }}
+          >
             <AnomalyList
               events={events}
               selectedId={selectedEventId}
@@ -247,8 +321,18 @@ export default function App() {
             />
           </div>
 
-          {/* AI Report: flex-1, fills remaining */}
-          <div style={{ flex: 1, minHeight: 0, overflow: 'hidden' }}>
+          {/* AI Report */}
+          <div
+            style={{
+              flex: isMobile ? 'none' : 1,
+              minHeight: isMobile ? '520px' : 0,
+              height: isMobile ? 'auto' : 'auto',
+              overflowX: 'hidden',
+              overflowY: isMobile ? 'visible' : 'hidden',
+              width: '100%',
+              maxWidth: '100%',
+            }}
+          >
             <AIReport
               report={selectedReport}
               event={selectedEvent}
@@ -261,3 +345,5 @@ export default function App() {
     </div>
   );
 }
+
+

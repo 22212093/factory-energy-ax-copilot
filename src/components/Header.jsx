@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import {
   Activity,
   Settings,
@@ -183,10 +183,19 @@ export default function Header({ language, setLanguage, t }) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [notifList, setNotifList] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   const langRef = useRef(null);
   const notifRef = useRef(null);
   const settingsRef = useRef(null);
+
+  // Track mobile width so dropdowns can render as safe full-width panels.
+  useEffect(() => {
+    const updateViewport = () => setIsMobile(window.innerWidth <= 640);
+    updateViewport();
+    window.addEventListener('resize', updateViewport);
+    return () => window.removeEventListener('resize', updateViewport);
+  }, []);
 
   // Load and map notifications with unique IDs when language changes
   useEffect(() => {
@@ -215,6 +224,28 @@ export default function Header({ language, setLanguage, t }) {
     boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.04)',
   };
 
+  const getPanelPosition = (desktopWidth = '20rem', desktopMaxHeight = 'none') => (
+    isMobile
+      ? {
+          position: 'fixed',
+          top: '52px',
+          left: '12px',
+          right: '12px',
+          width: 'auto',
+          maxHeight: 'calc(100vh - 68px)',
+          overflowY: 'auto',
+        }
+      : {
+          position: 'absolute',
+          top: '100%',
+          right: 0,
+          marginTop: '8px',
+          width: desktopWidth,
+          maxHeight: desktopMaxHeight,
+          overflowY: desktopMaxHeight === 'none' ? 'visible' : 'auto',
+        }
+  );
+
   const handleDismissNotif = (id) => {
     setNotifList((prev) => prev.filter((n) => n.id !== id));
   };
@@ -222,7 +253,7 @@ export default function Header({ language, setLanguage, t }) {
   return (
     <header
       id="dashboard-header"
-      className="flex items-center justify-between px-5 border-b relative animate-fade-in-up"
+      className="flex items-center justify-between gap-2 px-3 sm:px-5 border-b relative animate-fade-in-up"
       style={{
         background: 'rgba(10, 14, 26, 0.92)',
         borderColor: 'rgba(74, 90, 138, 0.15)',
@@ -234,7 +265,7 @@ export default function Header({ language, setLanguage, t }) {
       }}
     >
       {/* Logo & Title */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center animate-pulse-glow shrink-0"
           style={{
@@ -244,18 +275,18 @@ export default function Header({ language, setLanguage, t }) {
         >
           <Activity size={18} style={{ color: '#00e5ff' }} />
         </div>
-        <div>
-          <h1 className="text-sm font-bold text-white tracking-tight leading-normal">
+        <div className="min-w-0">
+          <h1 className="text-[13px] sm:text-sm font-bold text-white tracking-tight leading-normal truncate">
             Factory Energy AX Copilot
           </h1>
-          <p className="text-xs font-semibold leading-normal" style={{ color: '#c8d2e8' }}>
+          <p className="text-[11px] sm:text-xs font-semibold leading-normal truncate" style={{ color: '#c8d2e8' }}>
             {t.subtitle}
           </p>
         </div>
       </div>
 
       {/* Right side controls */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         {/* Status pill */}
         <div
           className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full"
@@ -275,7 +306,7 @@ export default function Header({ language, setLanguage, t }) {
           <button
             id="btn-language-selector"
             onClick={() => { setLangOpen(!langOpen); setNotifOpen(false); setSettingsOpen(false); }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer"
+            className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-xl transition-all duration-200 cursor-pointer"
             style={{
               background: langOpen ? 'rgba(0,229,255,0.08)' : 'rgba(21,29,53,0.6)',
               border: `1px solid ${langOpen ? 'rgba(0,229,255,0.3)' : 'rgba(74,90,138,0.25)'}`,
@@ -300,8 +331,8 @@ export default function Header({ language, setLanguage, t }) {
 
           {langOpen && (
             <div
-              className="absolute right-0 top-full mt-2 w-64 max-h-[280px] overflow-y-auto rounded-xl py-1.5 animate-fade-in-up"
-              style={{ ...panelStyle, zIndex: 9999 }}
+              className="rounded-xl py-1.5 animate-fade-in-up"
+              style={{ ...panelStyle, ...getPanelPosition('16rem', '280px'), zIndex: 9999 }}
             >
               {languageOptions.map((lang) => {
                 const isActive = language === lang.code;
@@ -361,8 +392,8 @@ export default function Header({ language, setLanguage, t }) {
 
           {notifOpen && (
             <div
-              className="absolute right-0 top-full mt-2 w-80 rounded-xl animate-fade-in-up"
-              style={{ ...panelStyle, zIndex: 9999 }}
+              className="rounded-xl animate-fade-in-up"
+              style={{ ...panelStyle, ...getPanelPosition('20rem', 'calc(100vh - 72px)'), zIndex: 9999 }}
             >
               {/* Panel header */}
               <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b" style={{ borderColor: 'rgba(74,90,138,0.2)' }}>
@@ -434,8 +465,8 @@ export default function Header({ language, setLanguage, t }) {
 
           {settingsOpen && (
             <div
-              className="absolute right-0 top-full mt-2 w-80 rounded-xl animate-fade-in-up"
-              style={{ ...panelStyle, zIndex: 9999 }}
+              className="rounded-xl animate-fade-in-up"
+              style={{ ...panelStyle, ...getPanelPosition('20rem', 'calc(100vh - 72px)'), zIndex: 9999 }}
             >
               {/* Panel header */}
               <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b" style={{ borderColor: 'rgba(74,90,138,0.2)' }}>
@@ -487,3 +518,4 @@ export default function Header({ language, setLanguage, t }) {
     </header>
   );
 }
+
