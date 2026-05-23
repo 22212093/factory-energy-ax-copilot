@@ -313,3 +313,49 @@ body {
   }
 }
 /* MOBILE_CHART_POLISH_END */
+
+/* DESKTOP_HEADER_NO_SCROLL_START */
+@media (min-width: 769px) {
+  html,
+  body,
+  #root {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #app-shell {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #app-shell > div:first-child {
+    flex: 0 0 56px !important;
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    overflow: visible !important;
+    position: relative !important;
+    z-index: 1000 !important;
+  }
+
+  #app-shell > div:first-child > * {
+    height: 56px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    overflow: visible !important;
+  }
+
+  #dashboard-main {
+    flex: 1 1 auto !important;
+    height: calc(100vh - 56px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+/* DESKTOP_HEADER_NO_SCROLL_END */
