@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import {
   Brain,
   Wind,
@@ -43,10 +43,64 @@ const priorityKeyToStyle = {
 };
 
 // ─── Gemini generate button ────────────────────────────────
-function GeminiButton({ onGenerate, loading, source }) {
+function GeminiButton({ onGenerate, loading, source, language }) {
   const isGemini = source === 'gemini';
   const isMock = source === 'mock' || source === 'api_error_fallback' || source === 'parse_error_fallback';
   const isQuota = source === 'quota_exceeded';
+
+  const labels = {
+    ko: {
+      generating: 'Gemini 분석 중...',
+      generate: 'Gemini로 리포트 생성',
+      quota: '{l.quota}',
+      quotaTitle: 'API 할당량 초과 — Mock 리포트를 표시합니다. 나중에 다시 시도하세요.',
+      fallback: 'Mock Fallback',
+    },
+    en: {
+      generating: 'Analyzing with Gemini...',
+      generate: 'Generate with Gemini',
+      quota: 'Quota exceeded · Mock',
+      quotaTitle: 'API quota exceeded — showing mock report. Try again later.',
+      fallback: 'Mock Fallback',
+    },
+    ja: {
+      generating: 'Geminiで分析中...',
+      generate: 'Geminiでレポート生成',
+      quota: 'Quota超過 · Mock',
+      quotaTitle: 'APIクォータを超過しました。Mockレポートを表示します。後でもう一度お試しください。',
+      fallback: 'Mock Fallback',
+    },
+    zh: {
+      generating: 'Gemini 分析中...',
+      generate: '使用 Gemini 生成报告',
+      quota: '配额超限 · Mock',
+      quotaTitle: 'API 配额已超限，正在显示 Mock 报告。请稍后重试。',
+      fallback: 'Mock Fallback',
+    },
+    fr: {
+      generating: 'Analyse Gemini en cours...',
+      generate: 'Générer avec Gemini',
+      quota: 'Quota dépassé · Mock',
+      quotaTitle: 'Quota API dépassé — affichage du rapport mock. Réessayez plus tard.',
+      fallback: 'Mock Fallback',
+    },
+    de: {
+      generating: 'Gemini analysiert...',
+      generate: 'Mit Gemini generieren',
+      quota: 'Quota überschritten · Mock',
+      quotaTitle: 'API-Kontingent überschritten — Mock-Bericht wird angezeigt. Später erneut versuchen.',
+      fallback: 'Mock Fallback',
+    },
+    id: {
+      generating: 'Menganalisis dengan Gemini...',
+      generate: 'Buat laporan dengan Gemini',
+      quota: 'Kuota terlampaui · Mock',
+      quotaTitle: 'Kuota API terlampaui — menampilkan laporan mock. Coba lagi nanti.',
+      fallback: 'Mock Fallback',
+    },
+  };
+
+  const l = labels[language] || labels.en;
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, flexWrap: 'wrap' }}>
@@ -92,7 +146,7 @@ function GeminiButton({ onGenerate, loading, source }) {
         ) : (
           <Sparkles size={11} style={{ color: '#c084fc' }} />
         )}
-        {loading ? 'Gemini 분석 중...' : 'Gemini로 리포트 생성'}
+        {loading ? l.generating : l.generate}
       </button>
 
       {/* ── Source badges ── */}
@@ -113,7 +167,7 @@ function GeminiButton({ onGenerate, loading, source }) {
       )}
       {isQuota && !loading && (
         <span
-          title="API quota exceeded — showing mock report. Try again later."
+          title={l.quotaTitle}
           style={{
             fontSize: '9px',
             fontWeight: 700,
@@ -124,7 +178,7 @@ function GeminiButton({ onGenerate, loading, source }) {
             color: '#f87171',
           }}
         >
-          Quota 초과 · Mock
+          {l.quota}
         </span>
       )}
       {isMock && !loading && (
@@ -428,7 +482,7 @@ export default function AIReport({ report: staticReport, event, language, t }) {
     setGeneratedReport(null);
     setSource(null);
     setLoading(false);
-  }, [event?.id]);
+  }, [event?.id, language]);
 
   const activeReport = generatedReport || staticReport;
 
@@ -513,10 +567,11 @@ export default function AIReport({ report: staticReport, event, language, t }) {
       }}
     >
       {/* Gemini action row */}
-      <GeminiButton onGenerate={handleGenerate} loading={loading} source={source} />
+      <GeminiButton onGenerate={handleGenerate} loading={loading} source={source} language={language} />
 
       {/* Report content */}
       <ReportBody report={activeReport} t={t} />
     </div>
   );
 }
+
