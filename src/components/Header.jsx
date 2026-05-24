@@ -20,22 +20,22 @@ import { languageOptions } from '../data/translations';
 const notifications = {
   ko: [
     { icon: 'zap', text: 'Compressor-2 전력 급증 감지', time: '15:08', severity: 'high' },
-    { icon: 'file', text: 'AI 리포트 생성 완료', time: '15:09', severity: 'info' },
+    { icon: 'alert', text: 'AI Lab 반복 사용 패턴 감지', time: '15:15', severity: 'low' },
     { icon: 'alert', text: 'Line-A 비작업시간 사용 감지', time: '15:11', severity: 'medium' },
   ],
   en: [
     { icon: 'zap', text: 'Compressor-2 power spike detected', time: '15:08', severity: 'high' },
-    { icon: 'file', text: 'AI report generation complete', time: '15:09', severity: 'info' },
+    { icon: 'alert', text: 'AI Lab repetitive pattern detected', time: '15:15', severity: 'low' },
     { icon: 'alert', text: 'Line-A off-hour usage detected', time: '15:11', severity: 'medium' },
   ],
   ja: [
     { icon: 'zap', text: 'Compressor-2 電力スパイク検出', time: '15:08', severity: 'high' },
-    { icon: 'file', text: 'AIレポート生成完了', time: '15:09', severity: 'info' },
+    { icon: 'alert', text: 'AI Lab 反復使用パターン検出', time: '15:15', severity: 'low' },
     { icon: 'alert', text: 'Line-A 時間外使用検出', time: '15:11', severity: 'medium' },
   ],
   zh: [
     { icon: 'zap', text: 'Compressor-2 功率尖峰检测', time: '15:08', severity: 'high' },
-    { icon: 'file', text: 'AI报告生成完成', time: '15:09', severity: 'info' },
+    { icon: 'alert', text: 'AI Lab 重复使用模式检测', time: '15:15', severity: 'low' },
     { icon: 'alert', text: 'Line-A 非工时用电检测', time: '15:11', severity: 'medium' },
   ],
   fr: [
@@ -303,7 +303,11 @@ export default function Header({ language, setLanguage, t }) {
   // Load and map notifications with unique IDs when language changes
   useEffect(() => {
     const currentNotifs = notifications[language] || notifications.en;
-    setNotifList(currentNotifs.map((n, idx) => ({ ...n, id: idx })));
+    setNotifList(
+      currentNotifs
+        .map((n, idx) => ({ ...n, id: idx }))
+        .sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')))
+    );
   }, [language]);
 
   // Close any open dropdown on outside click
@@ -620,6 +624,8 @@ const currentLang = languageOptions.find((l) => l.code === language);
     </header>
   );
 }
+
+
 
 
 
