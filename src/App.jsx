@@ -110,7 +110,27 @@ export default function App() {
 
   // ── Live anomaly simulation ──
   const fireNewEvent = useCallback(() => {
-    const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length)];
+    // LIVE_ANOMALY_DUPLICATE_GUARD_START
+    const liveAnomalyNow = Date.now();
+
+    if (typeof window !== 'undefined') {
+      if (!window.__faxLiveAnomalyGuard) {
+        window.__faxLiveAnomalyGuard = {
+          lastAt: 0,
+        };
+      }
+
+      if (
+        window.__faxLiveAnomalyGuard.lastAt &&
+        liveAnomalyNow - window.__faxLiveAnomalyGuard.lastAt < 55_000
+      ) {
+        return;
+      }
+
+      window.__faxLiveAnomalyGuard.lastAt = liveAnomalyNow;
+    }
+    // LIVE_ANOMALY_DUPLICATE_GUARD_END
+const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length)];
     const id = consumeNextId();
     const time = nowHHMM();
 
@@ -137,7 +157,7 @@ export default function App() {
 
       window.setTimeout(() => {
         setSelectedEventId(newEvent.id);
-      }, 10000);
+      }, 5000);
       // LIVE_ANOMALY_HEADER_EVENT_END
 
     // Add notification if enabled
@@ -160,7 +180,8 @@ export default function App() {
     if (!settings.liveMode) return;
 
     // Start a new interval based on current settings.interval
-    simTimerRef.current = setInterval(fireNewEvent, settings.interval * 1000);
+    const firstAnomalyTimer = window.setTimeout(fireNewEvent, 5_000);
+    simTimerRef.current = setInterval(fireNewEvent, 65_000);
 
     return () => {
       if (simTimerRef.current) clearInterval(simTimerRef.current);
@@ -478,6 +499,11 @@ export default function App() {
     </div>
   );
 }
+
+
+
+
+
 
 
 

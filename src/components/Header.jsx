@@ -206,7 +206,6 @@ export default function Header({ language, setLanguage, t }) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [notifList, setNotifList] = useState([]);
-
   // ANOMALY_NOTIFICATION_LISTENER_START
   useEffect(() => {
     function handleAnomalyDetectedForHeader(e) {
@@ -220,17 +219,31 @@ export default function Header({ language, setLanguage, t }) {
       const typeLabel = t.eventTypes?.[event.typeKey] || event.typeKey || 'event';
       const equipment = event.equipment || 'Unknown equipment';
       const time = event.time || '';
+      const eventId = event.id || equipment + '-' + event.typeKey + '-' + time;
 
-      setNotifList((prev) => [
-        {
-          id: 'anomaly-' + (event.id || Date.now()) + '-' + Date.now(),
-          icon: severity === 'high' ? 'zap' : 'alert',
-          text: labels.detected + ': ' + equipment + ' · ' + typeLabel + ' · ' + severityRaw.toUpperCase(),
-          time: time,
-          severity: severity,
-        },
-        ...prev,
-      ].slice(0, 12));
+      const severityMarker =
+        severity === 'high' ? '🔴 ' :
+        severity === 'medium' ? '🟠 ' :
+        severity === 'low' ? '🟢 ' : '';
+
+      setNotifList((prev) => {
+        // 같은 이상 이벤트는 헤더 알림에 중복 등록하지 않음
+        if (prev.some((n) => n.eventId === eventId)) {
+          return prev;
+        }
+
+        return [
+          {
+            id: 'anomaly-' + eventId,
+            eventId,
+            icon: severity === 'high' ? 'zap' : 'alert',
+            text: severityMarker + labels.detected + ': ' + equipment + ' · ' + typeLabel + ' · ' + severityRaw.toUpperCase(),
+            time: time,
+            severity: severity,
+          },
+          ...prev,
+        ].slice(0, 12);
+      });
 
       setNotifOpen(true);
     }
@@ -239,7 +252,6 @@ export default function Header({ language, setLanguage, t }) {
     return () => window.removeEventListener('fax-anomaly-detected', handleAnomalyDetectedForHeader);
   }, [language, t]);
   // ANOMALY_NOTIFICATION_LISTENER_END
-
 // REPORT_NOTIFICATION_HEADER_LISTENER_START
   useEffect(() => {
     function handleReportGeneratedForHeader(e) {
@@ -608,6 +620,13 @@ const currentLang = languageOptions.find((l) => l.code === language);
     </header>
   );
 }
+
+
+
+
+
+
+
 
 
 
