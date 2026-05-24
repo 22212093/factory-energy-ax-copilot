@@ -182,6 +182,74 @@ const anomalyNotificationText = {
   id: { detected: 'Anomali terdeteksi' },
 };
 /* ANOMALY_NOTIFICATION_TEXT_END */
+
+/* ANOMALY_NOTIFICATION_FORMAT_START */
+const anomalyEventTypeText = {
+  ko: {
+    powerSpike: '전력 급증',
+    offHourUsage: '비작업시간 사용',
+    repetitivePattern: '반복 사용 패턴',
+    coolingLoad: '냉각 부하 증가',
+    standbyPower: '대기전력 과다',
+  },
+  en: {
+    powerSpike: 'power spike',
+    offHourUsage: 'off-hour usage',
+    repetitivePattern: 'repetitive pattern',
+    coolingLoad: 'cooling load increase',
+    standbyPower: 'standby power excess',
+  },
+  ja: {
+    powerSpike: '電力スパイク',
+    offHourUsage: '時間外使用',
+    repetitivePattern: '反復使用パターン',
+    coolingLoad: '冷却負荷増加',
+    standbyPower: '待機電力過多',
+  },
+  zh: {
+    powerSpike: '电力峰值',
+    offHourUsage: '非工作时段用电',
+    repetitivePattern: '重复使用模式',
+    coolingLoad: '冷却负载增加',
+    standbyPower: '待机功耗过高',
+  },
+  fr: {
+    powerSpike: 'pic de puissance',
+    offHourUsage: 'usage hors horaires',
+    repetitivePattern: 'schéma répétitif',
+    coolingLoad: 'hausse de charge de refroidissement',
+    standbyPower: 'surconsommation en veille',
+  },
+  de: {
+    powerSpike: 'Leistungsspitze',
+    offHourUsage: 'Nutzung außerhalb der Arbeitszeit',
+    repetitivePattern: 'wiederholtes Nutzungsmuster',
+    coolingLoad: 'erhöhte Kühllast',
+    standbyPower: 'überhöhte Standby-Leistung',
+  },
+  id: {
+    powerSpike: 'lonjakan daya',
+    offHourUsage: 'penggunaan di luar jam kerja',
+    repetitivePattern: 'pola penggunaan berulang',
+    coolingLoad: 'kenaikan beban pendinginan',
+    standbyPower: 'daya siaga berlebih',
+  },
+};
+
+function formatAnomalyNotificationText(language, equipment, typeLabel) {
+  const suffix = {
+    ko: '감지',
+    en: 'detected',
+    ja: '検出',
+    zh: '检测',
+    fr: 'détectée',
+    de: 'erkannt',
+    id: 'terdeteksi',
+  }[language] || 'detected';
+
+  return `${equipment} ${typeLabel} ${suffix}`;
+}
+/* ANOMALY_NOTIFICATION_FORMAT_END */
 const nIconMap = {
   zap: Zap,
   file: FileText,
@@ -197,7 +265,11 @@ const sIconMap = {
 
 const severityDot = {
   high: '#ef4444',
+  HIGH: '#ef4444',
   medium: '#f59e0b',
+  MEDIUM: '#f59e0b',
+  low: '#10b981',
+  LOW: '#10b981',
   info: '#3b82f6',
 };
 
@@ -216,7 +288,7 @@ export default function Header({ language, setLanguage, t }) {
       const labels = anomalyNotificationText[language] || anomalyNotificationText.en;
       const severityRaw = String(event.severity || 'info');
       const severity = severityRaw.toLowerCase();
-      const typeLabel = t.eventTypes?.[event.typeKey] || event.typeKey || 'event';
+      const typeLabel = anomalyEventTypeText[language]?.[event.typeKey] || t.eventTypes?.[event.typeKey] || event.typeKey || 'event';
       const equipment = event.equipment || 'Unknown equipment';
       const time = event.time || '';
       const eventId = event.id || equipment + '-' + event.typeKey + '-' + time;
@@ -237,7 +309,7 @@ export default function Header({ language, setLanguage, t }) {
             id: 'anomaly-' + eventId,
             eventId,
             icon: severity === 'high' ? 'zap' : 'alert',
-            text: severityMarker + labels.detected + ': ' + equipment + ' · ' + typeLabel + ' · ' + severityRaw.toUpperCase(),
+            text: formatAnomalyNotificationText(language, equipment, typeLabel),
             time: time,
             severity: severity,
           },
@@ -534,7 +606,7 @@ const currentLang = languageOptions.find((l) => l.code === language);
                         onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
                       >
                         <div className="relative mt-0.5 shrink-0">
-                          <NIcon size={14} style={{ color: severityDot[n.severity] || '#3b82f6' }} />
+                          <NIcon size={14} style={{ color: severityDot[String(n.severity || '').toLowerCase()] || '#3b82f6' }} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-white leading-relaxed break-words">{n.text}</p>
@@ -542,7 +614,7 @@ const currentLang = languageOptions.find((l) => l.code === language);
                         </div>
                         <div
                           className="w-1.5 h-1.5 rounded-full mt-2 shrink-0 animate-pulse"
-                          style={{ background: severityDot[n.severity] || '#3b82f6' }}
+                          style={{ background: severityDot[String(n.severity || '').toLowerCase()] || '#3b82f6' }}
                         />
                       </button>
                     );
@@ -624,6 +696,9 @@ const currentLang = languageOptions.find((l) => l.code === language);
     </header>
   );
 }
+
+
+
 
 
 
