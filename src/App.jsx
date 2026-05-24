@@ -125,6 +125,20 @@ export default function App() {
 
     // Prepend to event list (newest first)
     setEvents(prev => [newEvent, ...prev]);
+      // LIVE_ANOMALY_HEADER_EVENT_START
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('fax-anomaly-detected', {
+          detail: {
+            event: newEvent,
+            language: language,
+          },
+        }));
+      }
+
+      window.setTimeout(() => {
+        setSelectedEventId(newEvent.id);
+      }, 10000);
+      // LIVE_ANOMALY_HEADER_EVENT_END
 
     // Add notification if enabled
     if (settings.notifications) {
@@ -464,6 +478,8 @@ export default function App() {
     </div>
   );
 }
+
+
 
 
 

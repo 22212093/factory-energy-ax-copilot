@@ -170,6 +170,18 @@ const reportNotificationText = {
   id: { done: 'Laporan AI dibuat', saving: 'Estimasi penghematan' },
 };
 /* REPORT_NOTIFICATION_HEADER_TEXT_END */
+
+/* ANOMALY_NOTIFICATION_TEXT_START */
+const anomalyNotificationText = {
+  ko: { detected: '이상 이벤트 감지' },
+  en: { detected: 'Anomaly detected' },
+  ja: { detected: '異常イベント検出' },
+  zh: { detected: '检测到异常事件' },
+  fr: { detected: 'Anomalie détectée' },
+  de: { detected: 'Anomalie erkannt' },
+  id: { detected: 'Anomali terdeteksi' },
+};
+/* ANOMALY_NOTIFICATION_TEXT_END */
 const nIconMap = {
   zap: Zap,
   file: FileText,
@@ -195,7 +207,40 @@ export default function Header({ language, setLanguage, t }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [notifList, setNotifList] = useState([]);
 
-  // REPORT_NOTIFICATION_HEADER_LISTENER_START
+  // ANOMALY_NOTIFICATION_LISTENER_START
+  useEffect(() => {
+    function handleAnomalyDetectedForHeader(e) {
+      const detail = e.detail || {};
+      if (detail.language && detail.language !== language) return;
+
+      const event = detail.event || {};
+      const labels = anomalyNotificationText[language] || anomalyNotificationText.en;
+      const severityRaw = String(event.severity || 'info');
+      const severity = severityRaw.toLowerCase();
+      const typeLabel = t.eventTypes?.[event.typeKey] || event.typeKey || 'event';
+      const equipment = event.equipment || 'Unknown equipment';
+      const time = event.time || '';
+
+      setNotifList((prev) => [
+        {
+          id: 'anomaly-' + (event.id || Date.now()) + '-' + Date.now(),
+          icon: severity === 'high' ? 'zap' : 'alert',
+          text: labels.detected + ': ' + equipment + ' · ' + typeLabel + ' · ' + severityRaw.toUpperCase(),
+          time: time,
+          severity: severity,
+        },
+        ...prev,
+      ].slice(0, 12));
+
+      setNotifOpen(true);
+    }
+
+    window.addEventListener('fax-anomaly-detected', handleAnomalyDetectedForHeader);
+    return () => window.removeEventListener('fax-anomaly-detected', handleAnomalyDetectedForHeader);
+  }, [language, t]);
+  // ANOMALY_NOTIFICATION_LISTENER_END
+
+// REPORT_NOTIFICATION_HEADER_LISTENER_START
   useEffect(() => {
     function handleReportGeneratedForHeader(e) {
       const detail = e.detail || {};
@@ -563,6 +608,8 @@ const currentLang = languageOptions.find((l) => l.code === language);
     </header>
   );
 }
+
+
 
 
 
