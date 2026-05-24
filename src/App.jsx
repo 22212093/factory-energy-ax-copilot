@@ -174,6 +174,125 @@ export default function App() {
     setNotifList([]);
   }
 
+
+  // ── AI report notification bridge ──
+  useEffect(() => {
+    function handleReportGeneratedNotification(e) {
+      const detail = e.detail || {};
+
+      // Ignore stale events from a previous language state
+      if (detail.language && detail.language !== language) return;
+
+      const labelsByLang = {
+        ko: { done: 'AI 리포트 생성 완료', saving: '예상 절감' },
+        en: { done: 'AI report generated', saving: 'Expected saving' },
+        ja: { done: 'AIレポート生成完了', saving: '予想削減' },
+        zh: { done: 'AI报告生成完成', saving: '预计节省' },
+        fr: { done: 'Rapport IA généré', saving: 'Économie estimée' },
+        de: { done: 'KI-Bericht generiert', saving: 'Erwartete Einsparung' },
+        id: { done: 'Laporan AI dibuat', saving: 'Estimasi penghematan' },
+      };
+
+      const labels = labelsByLang[language] || labelsByLang.en;
+      const equipment = detail.event?.equipment || detail.report?.title || 'AI Report';
+      const savings = detail.report?.savings ? ` · ${labels.saving} ${detail.report.savings}` : '';
+
+      const d = new Date();
+      const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+      setNotifList((prev) => [
+        {
+          id: `report-${detail.event?.id || Date.now()}-${Date.now()}`,
+          equipment,
+          typeKey: 'aiReportGenerated',
+          severity: detail.source === 'gemini' ? 'info' : 'medium',
+          time,
+          read: false,
+          text: `${labels.done}: ${equipment}${savings}`,
+        },
+        ...prev,
+      ]);
+    }
+
+    window.addEventListener('fax-report-generated', handleReportGeneratedNotification);
+    return () => window.removeEventListener('fax-report-generated', handleReportGeneratedNotification);
+  }, [language]);
+
+  function handleAIReportGenerated(detail) {
+    const labelsByLang = {
+      ko: { done: 'AI 리포트 생성 완료', saving: '예상 절감' },
+      en: { done: 'AI report generated', saving: 'Expected saving' },
+      ja: { done: 'AIレポート生成完了', saving: '予想削減' },
+      zh: { done: 'AI报告生成完成', saving: '预计节省' },
+      fr: { done: 'Rapport IA généré', saving: 'Économie estimée' },
+      de: { done: 'KI-Bericht generiert', saving: 'Erwartete Einsparung' },
+      id: { done: 'Laporan AI dibuat', saving: 'Estimasi penghematan' },
+    };
+
+    const labels = labelsByLang[language] || labelsByLang.en;
+    const equipment = detail?.event?.equipment || detail?.report?.title || 'AI Report';
+    const savings = detail?.report?.savings ? ` · ${labels.saving} ${detail.report.savings}` : '';
+    const sourceLabel = detail?.source === 'gemini' ? 'Gemini Live' : 'Local Rule';
+
+    const d = new Date();
+    const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+    setNotifList((prev) => [
+      {
+        id: `report-${detail?.event?.id || 'event'}-${Date.now()}`,
+        equipment,
+        typeKey: 'aiReportGenerated',
+        severity: detail?.source === 'gemini' ? 'info' : 'medium',
+        time,
+        read: false,
+        text: `${labels.done}: ${equipment}${savings} · ${sourceLabel}`,
+      },
+      ...prev,
+    ].slice(0, 12));
+  }
+
+  // REPORT_NOTIFICATION_V2_START
+  useEffect(() => {
+    function handleGeneratedReportNotificationV2(e) {
+      const detail = e.detail || {};
+
+      const labelsByLang = {
+        ko: { done: 'AI 리포트 생성 완료', saving: '예상 절감' },
+        en: { done: 'AI report generated', saving: 'Expected saving' },
+        ja: { done: 'AIレポート生成完了', saving: '予想削減' },
+        zh: { done: 'AI报告生成完成', saving: '预计节省' },
+        fr: { done: 'Rapport IA généré', saving: 'Économie estimée' },
+        de: { done: 'KI-Bericht generiert', saving: 'Erwartete Einsparung' },
+        id: { done: 'Laporan AI dibuat', saving: 'Estimasi penghematan' },
+      };
+
+      const labels = labelsByLang[language] || labelsByLang.en;
+      const report = detail.report || {};
+      const equipment = detail.event?.equipment || report.title || 'AI Report';
+      const savings = report.savings ? ' · ' + labels.saving + ' ' + report.savings : '';
+      const sourceLabel = detail.source === 'gemini' ? 'Gemini Live' : 'Local Rule';
+
+      const d = new Date();
+      const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+
+      setNotifList((prev) => [
+        {
+          id: 'report-' + Date.now(),
+          equipment,
+          typeKey: 'aiReportGenerated',
+          severity: detail.source === 'gemini' ? 'info' : 'medium',
+          time,
+          read: false,
+          text: labels.done + ': ' + equipment + savings + ' · ' + sourceLabel,
+        },
+        ...prev,
+      ].slice(0, 20));
+    }
+
+    window.addEventListener('fax-report-generated-v2', handleGeneratedReportNotificationV2);
+    return () => window.removeEventListener('fax-report-generated-v2', handleGeneratedReportNotificationV2);
+  }, [language]);
+  // REPORT_NOTIFICATION_V2_END
   // ── Derived state ──
   const selectedEvent = events.find(e => e.id === selectedEventId);
   const selectedReport = selectedEvent?.reports?.[language] || null;
@@ -345,5 +464,9 @@ export default function App() {
     </div>
   );
 }
+
+
+
+
 
 

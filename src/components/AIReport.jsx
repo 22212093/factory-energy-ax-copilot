@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import {
   Brain,
   Wind,
@@ -45,7 +45,7 @@ const priorityKeyToStyle = {
 // ─── Gemini generate button ────────────────────────────────
 function GeminiButton({ onGenerate, loading, source, language }) {
   const isGemini = source === 'gemini';
-  const isMock = source === 'mock' || source === 'api_error_fallback' || source === 'parse_error_fallback';
+  const isMock = source === 'mock' || source === 'api_error_fallback' || source === 'parse_error_fallback' || source === 'local_rule_engine' || source === 'api_error_local_rule' || source === 'parse_error_local_rule';
   const isQuota = source === 'quota_exceeded';
 
   const labels = {
@@ -54,49 +54,49 @@ function GeminiButton({ onGenerate, loading, source, language }) {
       generate: 'Gemini로 리포트 생성',
       quota: '{l.quota}',
       quotaTitle: 'API 할당량 초과 — Mock 리포트를 표시합니다. 나중에 다시 시도하세요.',
-      fallback: 'Mock Fallback',
+      fallback: 'Local Rule',
     },
     en: {
       generating: 'Analyzing with Gemini...',
       generate: 'Generate with Gemini',
       quota: 'Quota exceeded · Mock',
       quotaTitle: 'API quota exceeded — showing mock report. Try again later.',
-      fallback: 'Mock Fallback',
+      fallback: 'Local Rule',
     },
     ja: {
       generating: 'Geminiで分析中...',
       generate: 'Geminiでレポート生成',
       quota: 'Quota超過 · Mock',
       quotaTitle: 'APIクォータを超過しました。Mockレポートを表示します。後でもう一度お試しください。',
-      fallback: 'Mock Fallback',
+      fallback: 'Local Rule',
     },
     zh: {
       generating: 'Gemini 分析中...',
       generate: '使用 Gemini 生成报告',
       quota: '配额超限 · Mock',
       quotaTitle: 'API 配额已超限，正在显示 Mock 报告。请稍后重试。',
-      fallback: 'Mock Fallback',
+      fallback: 'Local Rule',
     },
     fr: {
       generating: 'Analyse Gemini en cours...',
       generate: 'Générer avec Gemini',
       quota: 'Quota dépassé · Mock',
       quotaTitle: 'Quota API dépassé — affichage du rapport mock. Réessayez plus tard.',
-      fallback: 'Mock Fallback',
+      fallback: 'Local Rule',
     },
     de: {
       generating: 'Gemini analysiert...',
       generate: 'Mit Gemini generieren',
       quota: 'Quota überschritten · Mock',
       quotaTitle: 'API-Kontingent überschritten — Mock-Bericht wird angezeigt. Später erneut versuchen.',
-      fallback: 'Mock Fallback',
+      fallback: 'Local Rule',
     },
     id: {
       generating: 'Menganalisis dengan Gemini...',
       generate: 'Buat laporan dengan Gemini',
       quota: 'Kuota terlampaui · Mock',
       quotaTitle: 'Kuota API terlampaui — menampilkan laporan mock. Coba lagi nanti.',
-      fallback: 'Mock Fallback',
+      fallback: 'Local Rule',
     },
   };
 
@@ -193,7 +193,7 @@ function GeminiButton({ onGenerate, loading, source, language }) {
             color: '#f59e0b',
           }}
         >
-          Mock Fallback
+          Local Rule
         </span>
       )}
     </div>
@@ -472,10 +472,10 @@ function ReportBody({ report, t }) {
 }
 
 // ─── Main export ───────────────────────────────────────────
-export default function AIReport({ report: staticReport, event, language, t }) {
+export default function AIReport({ report: staticReport, event, language, t, onReportGenerated }) {
   const [generatedReport, setGeneratedReport] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [source, setSource] = useState(null); // 'gemini' | 'mock' | 'quota_exceeded' | null
+  const [source, setSource] = useState(null); // 'gemini' | 'local_rule_engine' | 'quota_exceeded' | null
 
   // ── Reset generated report whenever the selected event changes ──
   useEffect(() => {
@@ -485,6 +485,23 @@ export default function AIReport({ report: staticReport, event, language, t }) {
   }, [event?.id, language]);
 
   const activeReport = generatedReport || staticReport;
+  const lastNotifiedReportKey = useRef(null);
+
+  useEffect(() => {
+    if (!generatedReport || !source) return;
+
+    const key = [event?.id || 'event', source, language, generatedReport.title || '', generatedReport.savings || ''].join('|');
+    if (lastNotifiedReportKey.current === key) return;
+
+    lastNotifiedReportKey.current = key;
+
+    onReportGenerated?.({
+      event,
+      report: generatedReport,
+      source,
+      language,
+    });
+  }, [generatedReport, source, event, language, onReportGenerated]);
 
   async function handleGenerate() {
     setLoading(true);
@@ -499,6 +516,19 @@ export default function AIReport({ report: staticReport, event, language, t }) {
       setGeneratedReport(data.report);
       setSource(data.source);
 
+      // REPORT_NOTIFICATION_DISPATCH_V2_START
+      if (typeof window !== 'undefined' && data && data.report) {
+        window.dispatchEvent(new CustomEvent('fax-report-generated-v2', {
+          detail: {
+            event,
+            report: data.report,
+            source: data.source,
+            language,
+          },
+        }));
+      }
+      // REPORT_NOTIFICATION_DISPATCH_V2_END
+
       if (typeof window !== 'undefined' && data?.report) {
         window.dispatchEvent(new CustomEvent('fax-report-generated', {
           detail: {
@@ -510,8 +540,29 @@ export default function AIReport({ report: staticReport, event, language, t }) {
         }));
       }
     } catch {
-      // Never show raw errors — fall through silently, keep existing report
-      setSource('mock');
+      // Never show raw errors — use current/static report as local-rule fallback
+      setSource('local_rule_engine');
+
+      // REPORT_NOTIFICATION_CATCH_V2_START
+      if (typeof window !== 'undefined' && staticReport) {
+        window.dispatchEvent(new CustomEvent('fax-report-generated-v2', {
+          detail: {
+            event,
+            report: staticReport,
+            source: 'local_rule_engine',
+            language,
+          },
+        }));
+      }
+      // REPORT_NOTIFICATION_CATCH_V2_END
+      if (staticReport) {
+        onReportGenerated?.({
+          event,
+          report: staticReport,
+          source: 'local_rule_engine',
+          language,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -585,5 +636,9 @@ export default function AIReport({ report: staticReport, event, language, t }) {
     </div>
   );
 }
+
+
+
+
 
 
