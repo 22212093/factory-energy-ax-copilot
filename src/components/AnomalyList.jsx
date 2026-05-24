@@ -1,3 +1,26 @@
+﻿
+function sortEventsByTimeDesc(events = []) {
+  return [...events].sort((a, b) =>
+    String(b.time || '').localeCompare(String(a.time || ''))
+  );
+}
+
+function formatAnomalyListTypeText(typeKey, label, language = 'ko') {
+  const koMap = {
+    powerSpike: '전력 급증',
+    offHourUsage: '비작업시간 전력 사용',
+    repetitivePattern: '반복 사용 패턴',
+    coolingLoad: '냉각 부하 증가',
+    standbyPower: '대기전력 과다',
+  };
+
+  if (language === 'ko') {
+    const base = koMap[typeKey] || label || typeKey || '이상 이벤트';
+    return base.endsWith('감지') ? base : `${base} 감지`;
+  }
+
+  return label || typeKey || 'Anomaly detected';
+}
 import { Clock, AlertTriangle } from 'lucide-react';
 
 const severityStyles = {
@@ -22,6 +45,7 @@ const severityStyles = {
 };
 
 export default function AnomalyList({ events, selectedId, onSelect, t }) {
+  const sortedEvents = sortEventsByTimeDesc(events);
   return (
     <div
       id="anomaly-events"
@@ -90,7 +114,7 @@ export default function AnomalyList({ events, selectedId, onSelect, t }) {
           maxHeight: '172px',
         }}
       >
-        {events.map((event, idx) => {
+        {sortedEvents.map((event, idx) => {
           const severity = severityStyles[event.severity];
           const isSelected = selectedId === event.id;
           const eventType = t[event.typeKey] || event.typeKey;
@@ -175,3 +199,7 @@ export default function AnomalyList({ events, selectedId, onSelect, t }) {
     </div>
   );
 }
+
+
+
+
