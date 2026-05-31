@@ -1,9 +1,10 @@
-﻿import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Header from './components/Header';
 import MetricCard from './components/MetricCard';
 import PowerChart from './components/PowerChart';
 import AnomalyList from './components/AnomalyList';
 import AIReport from './components/AIReport';
+import SensorPocCard from './components/SensorPocCard';
 import {
   metrics,
   anomalyEvents as seedEvents,
@@ -209,6 +210,25 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
     setNotifList([]);
   }
 
+  // ── Sensor PoC D4 이상 전류 이벤트 핸들러 ──────────
+  // SensorPocCard의 D4 클릭 → AnomalyList 추가 + AIReport 선택
+  function handleSensorAnomaly(eventData) {
+    const id = consumeNextId();
+    const newEvent = { ...eventData, id };
+    setEvents(prev => [newEvent, ...prev]);
+    setSelectedEventId(newEvent.id);
+    if (settings.notifications) {
+      setNotifList(prev => [{
+        id,
+        equipment: eventData.equipment,
+        typeKey:   eventData.typeKey,
+        severity:  eventData.severity,
+        time:      eventData.time,
+        read:      false,
+      }, ...prev]);
+    }
+  }
+
 
   // ── AI report notification bridge ──
   useEffect(() => {
@@ -398,7 +418,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
             flexDirection: 'column',
             gap: isMobile ? '12px' : '10px',
             overflowX: 'hidden',
-            overflowY: isMobile ? 'visible' : 'hidden',
+            overflowY: isMobile ? 'visible' : 'auto',
           }}
         >
           {/* Metric cards row */}
@@ -424,9 +444,9 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
           {/* Power chart */}
           <div
             style={{
-              flex: isMobile ? 'none' : 1,
+              flex: 'none',
               minHeight: 0,
-              height: isMobile ? '430px' : 'auto',
+              height: isMobile ? '430px' : '260px',
               overflowX: 'hidden',
               overflowY: 'hidden',
               width: '100%',
@@ -440,6 +460,9 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
               spikeTime={spikeTime}
             />
           </div>
+
+          {/* Sensor PoC — 좌측 컬럼 하단 (PowerChart 아래) */}
+          <SensorPocCard isMobile={isMobile} onAnomaly={handleSensorAnomaly} />
         </div>
 
         {/* ── Right column ── */}
@@ -494,6 +517,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
               t={t}
             />
           </div>
+
         </div>
       </main>
     </div>
