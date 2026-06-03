@@ -1,0 +1,19 @@
+{
+  "name": "gcp-telemetry-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Cloud Run API — XIAO ESP32-C3 + ACS712 5A 텔레메트리 수신·조회",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}
