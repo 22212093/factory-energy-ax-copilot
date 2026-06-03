@@ -75,8 +75,21 @@ export default function App() {
   const [language, setLanguage] = useState('ko');
   const [selectedEventId, setSelectedEventId] = useState(1);
 
-  // Live event list — starts with seed events (newest first)
-  const [events, setEvents] = useState([...seedEvents]);
+  // Live event list — starts with seed events (time-stamped relative to now)
+  const [events, setEvents] = useState(() => {
+    const offsets = [8, 5, 2]; // minutes ago per seed (oldest → newest)
+    return seedEvents.map((ev, i) => {
+      const d = new Date(Date.now() - (offsets[i] ?? 0) * 60_000);
+      const hh = String(d.getHours()).padStart(2, '0');
+      const mm = String(d.getMinutes()).padStart(2, '0');
+      return {
+        ...ev,
+        time: `${hh}:${mm}`,
+        sortIndex:  d.getTime(),
+        createdAt:  d.toISOString(),
+      };
+    });
+  });
 
   // Notifications — separate from event list
   const [notifList, setNotifList] = useState([]);

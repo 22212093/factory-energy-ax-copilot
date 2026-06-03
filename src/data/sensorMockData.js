@@ -106,6 +106,11 @@ export const XIAO_ANOMALY_REPORTS = {
     ],
     savings:    '3~6%',
     confidence: 86,
+    ragDocs: [
+      { title: 'IEC 60947-4-1 — 전동기 기동기 및 과전류 보호', desc: '과전류 임계값 설정 근거', url: 'https://webstore.iec.ch/publication/4051' },
+      { title: 'ACS712 Datasheet — Allegro MicroSystems', desc: '전류 센서 정확도 ±1.5% 및 응답속도 근거', url: 'https://www.allegromicro.com/en/products/sense/current-sensor-ics/zero-to-fifty-amp-integrated-conductor-sensor-ics/acs712' },
+      { title: 'KS C IEC 61000-4-5 — 서지 내성 시험', desc: '과전류/서지 감지 임계값 기준', url: 'https://www.kats.go.kr/main.do' },
+    ],
   },
   en: {
     title:   'XIAO ESP32-C3 Sensor Current Anomaly',
@@ -123,6 +128,11 @@ export const XIAO_ANOMALY_REPORTS = {
     ],
     savings:    '3~6%',
     confidence: 86,
+    ragDocs: [
+      { title: 'IEC 60947-4-1 — Motor Starters & Overcurrent Protection', desc: 'Overcurrent threshold standard reference', url: 'https://webstore.iec.ch/publication/4051' },
+      { title: 'ACS712 Datasheet — Allegro MicroSystems', desc: 'Current sensor ±1.5% accuracy & response time', url: 'https://www.allegromicro.com/en/products/sense/current-sensor-ics/zero-to-fifty-amp-integrated-conductor-sensor-ics/acs712' },
+      { title: 'KS C IEC 61000-4-5 — Surge Immunity Test', desc: 'Surge detection threshold reference', url: 'https://www.kats.go.kr/main.do' },
+    ],
   },
 };
 // 나머지 언어는 영어로 fallback
