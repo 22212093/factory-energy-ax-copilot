@@ -10,7 +10,7 @@
 //  - MQTT-ready Payload 표시 + JSON Copy
 //  - RAG 근거 문서 링크
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Cpu, Zap, AlertTriangle, CheckCircle, Activity,
   Wifi, WifiOff, Copy, Check, ExternalLink, BookOpen, StopCircle,
@@ -79,6 +79,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
   const [copied, setCopied] = useState(false);
   // ── D4 throttle (10초 중복 방지) ──────────────────────
   const lastD4Ref = useRef(0);
+  const wasAboveThresholdRef = useRef(false);
 
   // ── 활성 프레임 결정 ────────────────────────────────
   // 실제 연결된 경우 telemetry 우선, 아니면 mockFrame
@@ -130,33 +131,53 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
     return () => clearInterval(id);
   }, []); // 마운트 시 1회만 — 페이즈는 ref로 관리
 
+  // ── 센서 이상 이벤트 생성 ─────────────────────────────
+  const emitSensorAnomaly = useCallback((currentA) => {
+    const now = Date.now();
+    if (now - lastD4Ref.current < 10_000) return false;
+    lastD4Ref.current = now;
+
+    if (typeof onAnomaly === 'function') {
+      const d = new Date(now);
+      const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      onAnomaly({
+        equipment:   'XIAO ESP32-C3',
+        typeKey:     'sensorCurrent',
+        displayName: '센서 전류 이상',
+        severity:    'HIGH',
+        description: 'ACS712 5A 센서에서 단일 저전압 부하 전류가 임계값을 초과했습니다.',
+        source:      'XIAO ESP32-C3 + ACS712 5A',
+        currentA:    Number(currentA.toFixed(3)),
+        threshold:   WARNING_THRESHOLD,
+        time,
+        sortIndex:   now,
+        createdAt:   d.toISOString(),
+        reports:     XIAO_ANOMALY_REPORTS,
+      });
+    }
+
+    return true;
+  }, [onAnomaly]);
+
+  // 실제/Mock 전류가 임계값을 넘어서는 순간 센서 이벤트 생성
+  useEffect(() => {
+    const isAboveThreshold = I_A >= WARNING_THRESHOLD;
+    if (isAboveThreshold && !wasAboveThresholdRef.current) {
+      emitSensorAnomaly(I_A);
+    }
+    wasAboveThresholdRef.current = isAboveThreshold;
+  }, [I_A, emitSensorAnomaly]);
+
   // ── D4: 이상 전류 주입 ───────────────────────────────
   function handleD4() {
-    // 10초 throttle — 중복 이벤트 방지
-    const now = Date.now();
-    if (now - lastD4Ref.current < 10_000) return;
-    lastD4Ref.current = now;
+    const injectedFrame = getMockFrame(ANOMALY_PROFILE, 1);
+    if (!emitSensorAnomaly(injectedFrame.I_A)) return;
 
     // mock 페이즈를 즉시 ANOMALY로 전환
     phaseRef.current      = PHASE.ANOMALY;
     phaseCountRef.current = 0;
-    frameIdxRef.current   = 0;
-    setMockFrame(getMockFrame(ANOMALY_PROFILE, 0));
-
-    // 부모(App.jsx)에 XIAO 센서 이상 이벤트 전달
-    if (typeof onAnomaly === 'function') {
-      const d = new Date();
-      const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      onAnomaly({
-        equipment:  'XIAO ESP32-C3',
-        typeKey:    'sensorCurrent',
-        severity:   'HIGH',
-        time,
-        sortIndex:  Date.now(),
-        createdAt:  d.toISOString(),
-        reports:    XIAO_ANOMALY_REPORTS,
-      });
-    }
+    frameIdxRef.current   = 1;
+    setMockFrame(injectedFrame);
   }
 
   // ── D3: 관리자 장치 정지 ─────────────────────────────

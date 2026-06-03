@@ -214,7 +214,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
 
   // ── Sensor PoC D4 이상 전류 이벤트 핸들러 ──────────
   // SensorPocCard의 D4 클릭 → AnomalyList 추가 + AIReport 선택
-  function handleSensorAnomaly(eventData) {
+  const handleSensorAnomaly = useCallback((eventData) => {
     const id = consumeNextId();
     const now = Date.now();
     const newEvent = {
@@ -225,6 +225,15 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
     };
     setEvents(prev => [newEvent, ...prev]);
     setSelectedEventId(newEvent.id);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('fax-anomaly-detected', {
+        detail: {
+          // Header의 기존 전력 이상 알림 문구를 재사용하고 센서 이벤트 자체는 sensorCurrent로 유지
+          event: { ...newEvent, typeKey: 'powerSpike' },
+          language,
+        },
+      }));
+    }
     if (settings.notifications) {
       setNotifList(prev => [{
         id,
@@ -235,7 +244,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
         read:      false,
       }, ...prev]);
     }
-  }
+  }, [language, settings.notifications]);
 
 
   // ── AI report notification bridge ──

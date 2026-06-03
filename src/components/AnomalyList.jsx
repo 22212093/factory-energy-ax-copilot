@@ -1,6 +1,16 @@
 
 function sortEventsByTimeDesc(events = []) {
-  return [...events].sort((a, b) => (b.sortIndex ?? 0) - (a.sortIndex ?? 0));
+  const sortValue = (event) => {
+    if (event.sortIndex != null) return event.sortIndex;
+
+    const createdAt = Date.parse(event.createdAt);
+    if (!Number.isNaN(createdAt)) return createdAt;
+
+    const [hours = 0, minutes = 0] = String(event.time || '').split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  return [...events].sort((a, b) => sortValue(b) - sortValue(a));
 }
 
 function formatAnomalyListTypeText(typeKey, label, language = 'ko') {
@@ -116,7 +126,7 @@ export default function AnomalyList({ events, selectedId, onSelect, t }) {
         {sortedEvents.map((event, idx) => {
           const severity = severityStyles[event.severity];
           const isSelected = selectedId === event.id;
-          const eventType = t[event.typeKey] || event.typeKey;
+          const eventType = event.displayName || t[event.typeKey] || event.typeKey;
 
           return (
             <button
