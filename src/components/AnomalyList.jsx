@@ -1,8 +1,6 @@
-﻿
+
 function sortEventsByTimeDesc(events = []) {
-  return [...events].sort((a, b) =>
-    String(b.time || '').localeCompare(String(a.time || ''))
-  );
+  return [...events].sort((a, b) => (b.sortIndex ?? 0) - (a.sortIndex ?? 0));
 }
 
 function formatAnomalyListTypeText(typeKey, label, language = 'ko') {
@@ -12,6 +10,7 @@ function formatAnomalyListTypeText(typeKey, label, language = 'ko') {
     repetitivePattern: '반복 사용 패턴',
     coolingLoad: '냉각 부하 증가',
     standbyPower: '대기전력 과다',
+    sensorCurrent: '센서 전류 이상',
   };
 
   if (language === 'ko') {

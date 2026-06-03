@@ -77,6 +77,8 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
   const [d3Status, setD3Status] = useState(null); // null | { time }
   // ── Copy 상태 ────────────────────────────────────────
   const [copied, setCopied] = useState(false);
+  // ── D4 throttle (10초 중복 방지) ──────────────────────
+  const lastD4Ref = useRef(0);
 
   // ── 활성 프레임 결정 ────────────────────────────────
   // 실제 연결된 경우 telemetry 우선, 아니면 mockFrame
@@ -130,22 +132,29 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
 
   // ── D4: 이상 전류 주입 ───────────────────────────────
   function handleD4() {
+    // 10초 throttle — 중복 이벤트 방지
+    const now = Date.now();
+    if (now - lastD4Ref.current < 10_000) return;
+    lastD4Ref.current = now;
+
     // mock 페이즈를 즉시 ANOMALY로 전환
     phaseRef.current      = PHASE.ANOMALY;
     phaseCountRef.current = 0;
     frameIdxRef.current   = 0;
     setMockFrame(getMockFrame(ANOMALY_PROFILE, 0));
 
-    // 부모(App.jsx)에 이상 이벤트 전달 → AnomalyList + AIReport 트리거
+    // 부모(App.jsx)에 XIAO 센서 이상 이벤트 전달
     if (typeof onAnomaly === 'function') {
-      const now = new Date();
-      const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      const d = new Date();
+      const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
       onAnomaly({
-        equipment: 'XIAO ESP32-C3',
-        typeKey:   'powerSpike',        // AnomalyList.jsx koMap에 있는 키 재사용
-        severity:  'HIGH',
+        equipment:  'XIAO ESP32-C3',
+        typeKey:    'sensorCurrent',
+        severity:   'HIGH',
         time,
-        reports:   XIAO_ANOMALY_REPORTS,
+        sortIndex:  Date.now(),
+        createdAt:  d.toISOString(),
+        reports:    XIAO_ANOMALY_REPORTS,
       });
     }
   }

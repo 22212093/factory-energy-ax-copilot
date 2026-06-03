@@ -91,41 +91,42 @@ export const RAG_DOCUMENTS = [
 // (equipment='XIAO ESP32-C3'으로 기기가 구분됨)
 export const XIAO_ANOMALY_REPORTS = {
   ko: {
-    title:   'XIAO 이상 전류 감지 (ACS712 5A)',
-    summary: `ACS712 5A 전류 센서에서 임계값(${WARNING_THRESHOLD}A) 초과 스파이크 감지. SG90 서보 모터 즉시 트리거 완료. AI가 과부하·배선 이상을 원인 후보로 분석.`,
+    title:   'XIAO ESP32-C3 센서 전류 이상',
+    summary: 'ACS712 5A 센서에서 단일 저전압 부하의 전류가 임계값을 초과했습니다. AI가 서보 부하 증가, 기계적 저항, 전원 공급 불안정, 센서 노이즈를 원인 후보로 분석했습니다.',
     causes: [
-      { icon: 'zap',            label: '과전류 주입 감지',   detail: '' },
-      { icon: 'cpu',            label: 'ACS712 임계값 초과', detail: '' },
-      { icon: 'alert-triangle', label: '배선 부하 이상',     detail: '' },
-      { icon: 'activity',       label: 'SG90 서보 트리거됨', detail: '' },
+      { icon: 'activity',       label: '서보모터 순간 부하 증가',           detail: '' },
+      { icon: 'cog',            label: '회전부 기계적 저항 또는 걸림',      detail: '' },
+      { icon: 'zap',            label: '5V 전원 공급 불안정',              detail: '' },
+      { icon: 'cpu',            label: 'ACS712 센서 노이즈 또는 영점 오차', detail: '' },
     ],
     actions: [
-      { priority: 'immediate', label: '전류 회로 즉시 점검',  detail: '' },
-      { priority: 'today',     label: '부하 측 배선 검사',    detail: '' },
-      { priority: 'thisWeek',  label: '과전류 보호 설정 검토', detail: '' },
+      { priority: 'immediate', label: '부하 및 배선 상태 확인',           detail: '' },
+      { priority: 'today',     label: '서보모터 동작 범위 및 걸림 점검',  detail: '' },
+      { priority: 'thisWeek',  label: 'ACS712 영점 재보정 및 임계값 조정', detail: '' },
     ],
-    savings:    '2~4%',
-    confidence: 91,
+    savings:    '3~6%',
+    confidence: 86,
   },
   en: {
-    title:   'XIAO Anomaly Current Detected (ACS712 5A)',
-    summary: `ACS712 5A sensor detected spike above threshold (${WARNING_THRESHOLD}A). SG90 servo motor immediately triggered. AI analyzed overload and wiring fault as root causes.`,
+    title:   'XIAO ESP32-C3 Sensor Current Anomaly',
+    summary: 'ACS712 5A sensor detected current exceeding threshold on a single low-voltage load. AI analyzed servo load spike, mechanical resistance, 5V supply instability, and sensor noise as root causes.',
     causes: [
-      { icon: 'zap',            label: 'Overcurrent injection',   detail: '' },
-      { icon: 'cpu',            label: 'ACS712 threshold breach', detail: '' },
-      { icon: 'alert-triangle', label: 'Load wiring anomaly',     detail: '' },
-      { icon: 'activity',       label: 'SG90 servo triggered',    detail: '' },
+      { icon: 'activity',       label: 'Servo motor momentary load spike', detail: '' },
+      { icon: 'cog',            label: 'Mechanical resistance or jam',     detail: '' },
+      { icon: 'zap',            label: '5V supply instability',            detail: '' },
+      { icon: 'cpu',            label: 'ACS712 noise or zero offset',      detail: '' },
     ],
     actions: [
-      { priority: 'immediate', label: 'Inspect current circuit', detail: '' },
-      { priority: 'today',     label: 'Check load wiring',       detail: '' },
-      { priority: 'thisWeek',  label: 'Review OCP settings',     detail: '' },
+      { priority: 'immediate', label: 'Check load and wiring',             detail: '' },
+      { priority: 'today',     label: 'Inspect servo range and jams',      detail: '' },
+      { priority: 'thisWeek',  label: 'Recalibrate ACS712 zero and threshold', detail: '' },
     ],
-    savings:    '2~4%',
-    confidence: 91,
+    savings:    '3~6%',
+    confidence: 86,
   },
 };
 // 나머지 언어는 영어로 fallback
 ['ja', 'zh', 'fr', 'es', 'de', 'vi', 'id', 'th'].forEach(lang => {
   XIAO_ANOMALY_REPORTS[lang] = XIAO_ANOMALY_REPORTS.en;
 });
+

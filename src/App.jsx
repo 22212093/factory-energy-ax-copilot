@@ -142,6 +142,8 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
       typeKey: template.typeKey,
       severity: template.severity,
       reports: template.reports,
+      sortIndex: Date.now(),
+      createdAt: new Date().toISOString(),
     };
 
     // Prepend to event list (newest first)
@@ -214,7 +216,13 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
   // SensorPocCard의 D4 클릭 → AnomalyList 추가 + AIReport 선택
   function handleSensorAnomaly(eventData) {
     const id = consumeNextId();
-    const newEvent = { ...eventData, id };
+    const now = Date.now();
+    const newEvent = {
+      ...eventData,
+      id,
+      sortIndex:  eventData.sortIndex  ?? now,
+      createdAt:  eventData.createdAt  ?? new Date(now).toISOString(),
+    };
     setEvents(prev => [newEvent, ...prev]);
     setSelectedEventId(newEvent.id);
     if (settings.notifications) {
