@@ -44,6 +44,11 @@ const compressorReports = {
     ],
     savings: '8~12%',
     confidence: 94,
+    ragDocs: [
+      { title: 'ISO 50001 Energy Management', desc: '에너지 성과 개선 및 운영관리 기준', url: 'https://www.iso.org/iso-50001-energy-management.html' },
+      { title: 'Compressed Air System Best Practices', desc: '압축공기 누설·공회전 손실 점검 근거', url: 'https://www.energy.gov/eere/amo/compressed-air-systems' },
+      { title: 'Motor Overload Protection Guide', desc: '모터 과부하 및 보호 기준', url: 'https://www.nema.org/' },
+    ],
   },
   en: {
     title: 'Compressor-2 Power Spike',
@@ -61,6 +66,11 @@ const compressorReports = {
     ],
     savings: '8~12%',
     confidence: 94,
+    ragDocs: [
+      { title: 'ISO 50001 Energy Management', desc: 'Energy performance improvement & operations standard', url: 'https://www.iso.org/iso-50001-energy-management.html' },
+      { title: 'Compressed Air System Best Practices', desc: 'Air leak & idle-run loss inspection reference', url: 'https://www.energy.gov/eere/amo/compressed-air-systems' },
+      { title: 'Motor Overload Protection Guide', desc: 'Motor overload & protection standard', url: 'https://www.nema.org/' },
+    ],
   },
   ja: {
     title: 'Compressor-2 電力スパイク',
@@ -217,6 +227,11 @@ const lineAReports = {
     ],
     savings: '5~8%',
     confidence: 87,
+    ragDocs: [
+      { title: 'ISO 50001 Energy Management', desc: '피크 전력과 에너지 성과 관리 기준', url: 'https://www.iso.org/iso-50001-energy-management.html' },
+      { title: 'Demand Response / Peak Load Management Guide', desc: '피크 부하 완화 및 수요관리 근거', url: 'https://www.energy.gov/oe/demand-response' },
+      { title: 'Equipment Scheduling Best Practices', desc: '설비 기동 순서 및 부하 분산 근거', url: 'https://www.energy.gov/eere/amo/advanced-manufacturing-office' },
+    ],
   },
   en: {
     title: 'Line-A Off-hour Usage',
@@ -234,6 +249,11 @@ const lineAReports = {
     ],
     savings: '5~8%',
     confidence: 87,
+    ragDocs: [
+      { title: 'ISO 50001 Energy Management', desc: 'Peak power & energy performance management', url: 'https://www.iso.org/iso-50001-energy-management.html' },
+      { title: 'Demand Response / Peak Load Management Guide', desc: 'Peak load mitigation & demand management', url: 'https://www.energy.gov/oe/demand-response' },
+      { title: 'Equipment Scheduling Best Practices', desc: 'Equipment start sequencing & load distribution', url: 'https://www.energy.gov/eere/amo/advanced-manufacturing-office' },
+    ],
   },
   ja: {
     title: 'Line-A 時間外使用',
@@ -390,6 +410,11 @@ const aiLabReports = {
     ],
     savings: '3~5%',
     confidence: 79,
+    ragDocs: [
+      { title: 'ENERGY STAR Data Center Energy Efficiency', desc: '서버·IT 장비 에너지 효율 기준', url: 'https://www.energystar.gov/products/data_center_equipment' },
+      { title: 'Server Power Management Guide', desc: '유휴 서버 절전 및 전원관리 근거', url: 'https://www.energy.gov/eere/femp/energy-efficient-data-centers' },
+      { title: 'ASHRAE Data Center Thermal Guidelines', desc: '서버실 냉각·열관리 기준', url: 'https://www.ashrae.org/' },
+    ],
   },
   en: {
     title: 'AI Lab Repetitive Pattern',
@@ -407,6 +432,11 @@ const aiLabReports = {
     ],
     savings: '3~5%',
     confidence: 79,
+    ragDocs: [
+      { title: 'ENERGY STAR Data Center Energy Efficiency', desc: 'Server & IT equipment energy efficiency standard', url: 'https://www.energystar.gov/products/data_center_equipment' },
+      { title: 'Server Power Management Guide', desc: 'Idle server power management reference', url: 'https://www.energy.gov/eere/femp/energy-efficient-data-centers' },
+      { title: 'ASHRAE Data Center Thermal Guidelines', desc: 'Data center cooling & thermal management', url: 'https://www.ashrae.org/' },
+    ],
   },
   ja: {
     title: 'AI Lab 反復パターン',
