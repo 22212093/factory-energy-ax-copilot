@@ -112,9 +112,10 @@ export default function MetricCard({ metric, delay = 0, t }) {
           {trend}
         </span>
         <span style={{ fontSize: '10px', fontWeight: 600, color: '#94a3b8' }}>
-          {t.vsYesterday}
+          {(metric.suffixText ?? t.vsYesterday)}
         </span>
       </div>
     </div>
   );
 }
+

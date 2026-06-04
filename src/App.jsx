@@ -466,14 +466,33 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
               maxWidth: '100%',
             }}
           >
-            {metrics.map((m) => {
-                let value = m.value;
-                if (m.id === 'anomaly-events') value = String(events.length);
-                if (m.id === 'ai-reports')     value = String(events.length);
-                return (
-                  <MetricCard key={m.id} metric={{ ...m, value }} delay={metrics.indexOf(m) * 50} t={t} />
-                );
-              })}
+            {metrics.map((m, i) => {
+              let metric = m;
+
+              if (m.id === 'anomaly-events') {
+                metric = {
+                  ...m,
+                  value: String(events.length),
+                  trend: '실시간',
+                  trendKey: undefined,
+                  trendUp: false,
+                  suffixText: t.detectedToday || '오늘 감지됨',
+                };
+              }
+
+              if (m.id === 'ai-reports') {
+                metric = {
+                  ...m,
+                  value: String(events.length),
+                  trend: t.ready || '준비됨',
+                  trendKey: undefined,
+                  trendUp: false,
+                  suffixText: 'DOCX 생성 가능',
+                };
+              }
+
+              return <MetricCard key={m.id} metric={metric} delay={i * 50} t={t} />;
+            })}
           </div>
 
           {/* Power chart */}
