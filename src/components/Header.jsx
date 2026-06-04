@@ -19,54 +19,54 @@ import { languageOptions } from '../data/translations';
 // ─── Notification mock data (per-language) ─────────────
 const notifications = {
   ko: [
-    { icon: 'zap', text: 'Compressor-2 전력 급증 감지', time: '15:08', severity: 'high' },
-    { icon: 'alert', text: 'AI Lab 반복 사용 패턴 감지', time: '15:15', severity: 'low' },
-    { icon: 'alert', text: 'Line-A 비작업시간 사용 감지', time: '15:11', severity: 'medium' },
+    { eventId: 1, icon: 'zap', text: 'Compressor-2 전력 급증 감지', time: '15:08', severity: 'high' },
+    { eventId: 3, icon: 'alert', text: 'AI Lab 반복 사용 패턴 감지', time: '15:15', severity: 'low' },
+    { eventId: 2, icon: 'alert', text: 'Line-A 비작업시간 사용 감지', time: '15:11', severity: 'medium' },
   ],
   en: [
-    { icon: 'zap', text: 'Compressor-2 power spike detected', time: '15:08', severity: 'high' },
-    { icon: 'alert', text: 'AI Lab repetitive pattern detected', time: '15:15', severity: 'low' },
-    { icon: 'alert', text: 'Line-A off-hour usage detected', time: '15:11', severity: 'medium' },
+    { eventId: 1, icon: 'zap', text: 'Compressor-2 power spike detected', time: '15:08', severity: 'high' },
+    { eventId: 3, icon: 'alert', text: 'AI Lab repetitive pattern detected', time: '15:15', severity: 'low' },
+    { eventId: 2, icon: 'alert', text: 'Line-A off-hour usage detected', time: '15:11', severity: 'medium' },
   ],
   ja: [
-    { icon: 'zap', text: 'Compressor-2 電力スパイク検出', time: '15:08', severity: 'high' },
-    { icon: 'alert', text: 'AI Lab 反復使用パターン検出', time: '15:15', severity: 'low' },
-    { icon: 'alert', text: 'Line-A 時間外使用検出', time: '15:11', severity: 'medium' },
+    { eventId: 1, icon: 'zap', text: 'Compressor-2 電力スパイク検出', time: '15:08', severity: 'high' },
+    { eventId: 3, icon: 'alert', text: 'AI Lab 反復使用パターン検出', time: '15:15', severity: 'low' },
+    { eventId: 2, icon: 'alert', text: 'Line-A 時間外使用検出', time: '15:11', severity: 'medium' },
   ],
   zh: [
-    { icon: 'zap', text: 'Compressor-2 功率尖峰检测', time: '15:08', severity: 'high' },
-    { icon: 'alert', text: 'AI Lab 重复使用模式检测', time: '15:15', severity: 'low' },
-    { icon: 'alert', text: 'Line-A 非工时用电检测', time: '15:11', severity: 'medium' },
+    { eventId: 1, icon: 'zap', text: 'Compressor-2 功率尖峰检测', time: '15:08', severity: 'high' },
+    { eventId: 3, icon: 'alert', text: 'AI Lab 重复使用模式检测', time: '15:15', severity: 'low' },
+    { eventId: 2, icon: 'alert', text: 'Line-A 非工时用电检测', time: '15:11', severity: 'medium' },
   ],
   fr: [
-    { icon: 'zap', text: 'Compressor-2 pic de puissance détecté', time: '15:08', severity: 'high' },
+    { eventId: 1, icon: 'zap', text: 'Compressor-2 pic de puissance détecté', time: '15:08', severity: 'high' },
     { icon: 'file', text: 'Rapport IA généré', time: '15:09', severity: 'info' },
-    { icon: 'alert', text: 'Line-A usage hors horaires détecté', time: '15:11', severity: 'medium' },
+    { eventId: 2, icon: 'alert', text: 'Line-A usage hors horaires détecté', time: '15:11', severity: 'medium' },
   ],
   es: [
-    { icon: 'zap', text: 'Compressor-2 pico de potencia detectado', time: '15:08', severity: 'high' },
+    { eventId: 1, icon: 'zap', text: 'Compressor-2 pico de potencia detectado', time: '15:08', severity: 'high' },
     { icon: 'file', text: 'Informe de IA generado', time: '15:09', severity: 'info' },
-    { icon: 'alert', text: 'Line-A uso fuera de horario detectado', time: '15:11', severity: 'medium' },
+    { eventId: 2, icon: 'alert', text: 'Line-A uso fuera de horario detectado', time: '15:11', severity: 'medium' },
   ],
   de: [
-    { icon: 'zap', text: 'Compressor-2 Leistungsspitze erkannt', time: '15:08', severity: 'high' },
+    { eventId: 1, icon: 'zap', text: 'Compressor-2 Leistungsspitze erkannt', time: '15:08', severity: 'high' },
     { icon: 'file', text: 'KI-Bericht erfolgreich generiert', time: '15:09', severity: 'info' },
-    { icon: 'alert', text: 'Line-A off-hour Nutzung erkannt', time: '15:11', severity: 'medium' },
+    { eventId: 2, icon: 'alert', text: 'Line-A off-hour Nutzung erkannt', time: '15:11', severity: 'medium' },
   ],
   vi: [
-    { icon: 'zap', text: 'Phát hiện đỉnh điện Compressor-2', time: '15:08', severity: 'high' },
+    { eventId: 1, icon: 'zap', text: 'Phát hiện đỉnh điện Compressor-2', time: '15:08', severity: 'high' },
     { icon: 'file', text: 'Báo cáo AI đã tạo thành công', time: '15:09', severity: 'info' },
-    { icon: 'alert', text: 'Phát hiện sử dụng Line-A ngoài giờ', time: '15:11', severity: 'medium' },
+    { eventId: 2, icon: 'alert', text: 'Phát hiện sử dụng Line-A ngoài giờ', time: '15:11', severity: 'medium' },
   ],
   id: [
-    { icon: 'zap', text: 'Lonjakan daya Compressor-2 terdeteksi', time: '15:08', severity: 'high' },
+    { eventId: 1, icon: 'zap', text: 'Lonjakan daya Compressor-2 terdeteksi', time: '15:08', severity: 'high' },
     { icon: 'file', text: 'Laporan AI selesai dibuat', time: '15:09', severity: 'info' },
-    { icon: 'alert', text: 'Penggunaan Line-A luar jam kerja terdeteksi', time: '15:11', severity: 'medium' },
+    { eventId: 2, icon: 'alert', text: 'Penggunaan Line-A luar jam kerja terdeteksi', time: '15:11', severity: 'medium' },
   ],
   th: [
-    { icon: 'zap', text: 'ตรวจพบ Compressor-2 ไฟกระชาก', time: '15:08', severity: 'high' },
+    { eventId: 1, icon: 'zap', text: 'ตรวจพบ Compressor-2 ไฟกระชาก', time: '15:08', severity: 'high' },
     { icon: 'file', text: 'สร้างรายงาน AI เสร็จสมบูรณ์', time: '15:09', severity: 'info' },
-    { icon: 'alert', text: 'ตรวจพบการใช้งาน Line-A นอกเวลา', time: '15:11', severity: 'medium' },
+    { eventId: 2, icon: 'alert', text: 'ตรวจพบการใช้งาน Line-A นอกเวลา', time: '15:11', severity: 'medium' },
   ],
 };
 
@@ -249,6 +249,16 @@ function formatAnomalyNotificationText(language, equipment, typeLabel) {
 
   return `${equipment} ${typeLabel} ${suffix}`;
 }
+
+function eventHHMM(event) {
+  if (event?.time) return event.time;
+
+  const d = new Date(event?.createdAt);
+  if (Number.isNaN(d.getTime())) return '';
+
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
 /* ANOMALY_NOTIFICATION_FORMAT_END */
 const nIconMap = {
   zap: Zap,
@@ -273,7 +283,7 @@ const severityDot = {
   info: '#3b82f6',
 };
 
-export default function Header({ language, setLanguage, t }) {
+export default function Header({ language, setLanguage, t, events = [] }) {
   const [langOpen, setLangOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -290,7 +300,7 @@ export default function Header({ language, setLanguage, t }) {
       const severity = severityRaw.toLowerCase();
       const typeLabel = anomalyEventTypeText[language]?.[event.typeKey] || t.eventTypes?.[event.typeKey] || event.typeKey || 'event';
       const equipment = event.equipment || 'Unknown equipment';
-      const time = event.time || '';
+      const time = eventHHMM(event);
       const eventId = event.id || equipment + '-' + event.typeKey + '-' + time;
 
       const severityMarker =
@@ -336,8 +346,7 @@ export default function Header({ language, setLanguage, t }) {
       const savings = report.savings ? ' · ' + labels.saving + ' ' + report.savings : '';
       const sourceLabel = detail.source === 'gemini' ? 'Gemini Live' : 'Local Rule';
 
-      const d = new Date();
-      const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      const time = eventHHMM(detail.event);
 
       setNotifList((prev) => [
         {
@@ -363,6 +372,7 @@ export default function Header({ language, setLanguage, t }) {
   const langRef = useRef(null);
   const notifRef = useRef(null);
   const settingsRef = useRef(null);
+  const seedEventsRef = useRef(events);
 
   // Track mobile width so dropdowns can render as safe full-width panels.
   useEffect(() => {
@@ -375,9 +385,13 @@ export default function Header({ language, setLanguage, t }) {
   // Load and map notifications with unique IDs when language changes
   useEffect(() => {
     const currentNotifs = notifications[language] || notifications.en;
+    const seedEventsById = new Map(seedEventsRef.current.map((event) => [event.id, event]));
     setNotifList(
       currentNotifs
-        .map((n, idx) => ({ ...n, id: idx }))
+        .map((n, idx) => {
+          const event = seedEventsById.get(n.eventId);
+          return { ...n, id: idx, time: event ? eventHHMM(event) : n.time };
+        })
         .sort((a, b) => String(b.time || '').localeCompare(String(a.time || '')))
     );
   }, [language]);

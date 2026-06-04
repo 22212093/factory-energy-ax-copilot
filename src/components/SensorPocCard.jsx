@@ -191,11 +191,22 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
 
   // ── D3: 관리자 장치 정지 ─────────────────────────────
   function handleD3() {
+    if (!isLive && stoppedRef.current) {
+      stoppedRef.current   = false;
+      phaseRef.current     = PHASE.NORMAL;
+      phaseCountRef.current = 0;
+      frameIdxRef.current  = 0;
+      setD3Status(null);
+      setMockFrame(getMockFrame(NORMAL_PROFILE, 0));
+      return;
+    }
+
     const now = new Date();
     const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     setD3Status({ time });
     if (!isLive) {
       stoppedRef.current = true;
+      lastD4Ref.current = 0;
       setMockFrame({ ts: Date.now(), I_A: 0, status: 'stopped', servo: 'stopped' });
     }
     // mock이 ANOMALY/RECOVERY 상태면 RECOVERY로 전환
@@ -427,7 +438,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(99,102,241,0.10)'; }}
         >
           <StopCircle size={11} />
-          D3 — 장치 정지
+          {isStopped ? 'D3 — 장치 재가동' : 'D3 — 장치 정지'}
         </button>
       </div>
 

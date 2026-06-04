@@ -42,6 +42,18 @@ function nowHHMM() {
   const d = new Date();
   return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
+
+function eventHHMM(event) {
+  if (event?.time) return event.time;
+
+  const d = new Date(event?.createdAt);
+  if (!Number.isNaN(d.getTime())) {
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  return nowHHMM();
+}
+
 function nowHHMMSS() {
   const d = new Date();
   return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;
@@ -183,7 +195,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
         equipment: template.equipment,
         typeKey: template.typeKey,
         severity: template.severity,
-        time,
+        time: newEvent.time,
         read: false,
       }, ...prev]);
     }
@@ -230,11 +242,13 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
   const handleSensorAnomaly = useCallback((eventData) => {
     const id = consumeNextId();
     const now = Date.now();
+    const createdAt = eventData.createdAt ?? new Date(now).toISOString();
     const newEvent = {
       ...eventData,
       id,
+      time:       eventData.time       ?? eventHHMM({ createdAt }),
       sortIndex:  eventData.sortIndex  ?? now,
-      createdAt:  eventData.createdAt  ?? new Date(now).toISOString(),
+      createdAt,
     };
     setEvents(prev => [newEvent, ...prev]);
     setSelectedEventId(newEvent.id);
@@ -250,10 +264,10 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
     if (settings.notifications) {
       setNotifList(prev => [{
         id,
-        equipment: eventData.equipment,
-        typeKey:   eventData.typeKey,
-        severity:  eventData.severity,
-        time:      eventData.time,
+        equipment: newEvent.equipment,
+        typeKey:   newEvent.typeKey,
+        severity:  newEvent.severity,
+        time:      newEvent.time,
         read:      false,
       }, ...prev]);
     }
@@ -281,9 +295,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
       const labels = labelsByLang[language] || labelsByLang.en;
       const equipment = detail.event?.equipment || detail.report?.title || 'AI Report';
       const savings = detail.report?.savings ? ` · ${labels.saving} ${detail.report.savings}` : '';
-
-      const d = new Date();
-      const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+      const time = eventHHMM(detail.event);
 
       setNotifList((prev) => [
         {
@@ -318,9 +330,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
     const equipment = detail?.event?.equipment || detail?.report?.title || 'AI Report';
     const savings = detail?.report?.savings ? ` · ${labels.saving} ${detail.report.savings}` : '';
     const sourceLabel = detail?.source === 'gemini' ? 'Gemini Live' : 'Local Rule';
-
-    const d = new Date();
-    const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    const time = eventHHMM(detail?.event);
 
     setNotifList((prev) => [
       {
@@ -356,9 +366,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
       const equipment = detail.event?.equipment || report.title || 'AI Report';
       const savings = report.savings ? ' · ' + labels.saving + ' ' + report.savings : '';
       const sourceLabel = detail.source === 'gemini' ? 'Gemini Live' : 'Local Rule';
-
-      const d = new Date();
-      const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      const time = eventHHMM(detail.event);
 
       setNotifList((prev) => [
         {
@@ -419,6 +427,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
           onMarkRead={handleMarkRead}
           onDismissNotif={handleDismissNotif}
           onDismissAllNotifs={handleDismissAllNotifs}
+          events={events}
         />
       </div>
 
