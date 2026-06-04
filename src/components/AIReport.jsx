@@ -362,7 +362,7 @@ function ReportBody({ report, t }) {
       </div>
 
       {/* Recommended Actions */}
-      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <div style={{ flexShrink: 0 }}>
         <h4
           style={{
             fontSize: '10px',
@@ -378,9 +378,6 @@ function ReportBody({ report, t }) {
         </h4>
         <div
           style={{
-            flex: 1,
-            minHeight: 0,
-            overflowY: 'auto',
             display: 'flex',
             flexDirection: 'column',
             gap: '5px',
@@ -817,8 +814,10 @@ export default function AIReport({ report: staticReport, event, language, t, onR
         <ReportDownloadButton report={activeReport} event={event} language={language} source={source} />
       </div>
 
-      {/* Report content */}
-      <ReportBody report={activeReport} t={t} />
+      {/* Report content — scrollable */}
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <ReportBody report={activeReport} t={t} />
+      </div>
     </div>
   );
 }
