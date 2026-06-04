@@ -466,9 +466,14 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
               maxWidth: '100%',
             }}
           >
-            {metrics.map((m, i) => (
-              <MetricCard key={m.id} metric={m} delay={i * 50} t={t} />
-            ))}
+            {metrics.map((m) => {
+                let value = m.value;
+                if (m.id === 'anomaly-events') value = String(events.length);
+                if (m.id === 'ai-reports')     value = String(events.length);
+                return (
+                  <MetricCard key={m.id} metric={{ ...m, value }} delay={metrics.indexOf(m) * 50} t={t} />
+                );
+              })}
           </div>
 
           {/* Power chart */}
