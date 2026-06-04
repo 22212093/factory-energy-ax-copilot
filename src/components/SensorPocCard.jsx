@@ -71,6 +71,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
   const phaseRef     = useRef(PHASE.NORMAL);
   const frameIdxRef  = useRef(0);
   const phaseCountRef = useRef(0);
+  const stoppedRef   = useRef(false);
   const [mockFrame, setMockFrame] = useState(() => getMockFrame(NORMAL_PROFILE, 0));
 
   // ── D3 상태 ─────────────────────────────────────────
@@ -90,23 +91,28 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
   const status = activeFrame?.status ?? 'normal';
   const servo  = activeFrame?.servo  ?? 'idle';
 
+  const isStopped = status === 'stopped';
   const isAlert   = I_A >= ALERT_THRESHOLD;
   const isWarning = I_A >= WARNING_THRESHOLD;
 
-  const statusColor = isAlert   ? '#ef4444'
+  const statusColor = isStopped ? '#a5b4fc'
+                    : isAlert   ? '#ef4444'
                     : isWarning ? '#f59e0b'
                     : '#10b981';
-  const statusBg    = isAlert   ? 'rgba(239,68,68,0.10)'
+  const statusBg    = isStopped ? 'rgba(99,102,241,0.10)'
+                    : isAlert   ? 'rgba(239,68,68,0.10)'
                     : isWarning ? 'rgba(245,158,11,0.10)'
                     : 'rgba(16,185,129,0.10)';
 
   // 진행 막대 % (0.05 ~ 1.50A 기준)
-  const currentPct = Math.min(100, Math.round(((I_A - 0.05) / (1.50 - 0.05)) * 100));
+  const currentPct = Math.max(0, Math.min(100, Math.round(((I_A - 0.05) / (1.50 - 0.05)) * 100)));
 
   // ── Mock 업데이트 루프 ───────────────────────────────
   // isConnected=true 이면 실제 serial 우선, mock 루프는 멈추지 않지만 표시에 쓰이지 않음
   useEffect(() => {
     const id = setInterval(() => {
+      if (stoppedRef.current) return;
+
       // 인덱스 증가
       frameIdxRef.current++;
       phaseCountRef.current++;
@@ -170,6 +176,9 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
 
   // ── D4: 이상 전류 주입 ───────────────────────────────
   function handleD4() {
+    stoppedRef.current = false;
+    setD3Status(null);
+
     const injectedFrame = getMockFrame(ANOMALY_PROFILE, 1);
     if (!emitSensorAnomaly(injectedFrame.I_A)) return;
 
@@ -185,6 +194,10 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
     const now = new Date();
     const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     setD3Status({ time });
+    if (!isLive) {
+      stoppedRef.current = true;
+      setMockFrame({ ts: Date.now(), I_A: 0, status: 'stopped', servo: 'stopped' });
+    }
     // mock이 ANOMALY/RECOVERY 상태면 RECOVERY로 전환
     if (phaseRef.current !== PHASE.NORMAL) {
       phaseRef.current      = PHASE.RECOVERY;
@@ -369,7 +382,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
           <MiniCell
             label="상태"
-            value={status === 'alert' ? '● Alert' : status === 'warning' ? '● Warning' : '● Normal'}
+            value={status === 'stopped' ? '● Stopped' : status === 'alert' ? '● Alert' : status === 'warning' ? '● Warning' : '● Normal'}
             color={statusColor}
           />
           <MiniCell label="서보" value={servo} color="#94a3b8" />

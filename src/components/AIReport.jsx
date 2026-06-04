@@ -45,6 +45,28 @@ const priorityKeyToStyle = {
   thisWeek: { bg: 'rgba(59,130,246,0.1)', border: 'rgba(59,130,246,0.25)', color: '#3b82f6' },
 };
 
+const DEFAULT_RAG_DOCS = [
+  {
+    title: 'ISO 50001 Energy Management',
+    desc: '에너지 성과 개선 및 운영관리 기준',
+    url: 'https://www.iso.org/iso-50001-energy-management.html',
+  },
+  {
+    title: 'Industrial Energy Audit Checklist',
+    desc: '설비별 전력 낭비·공회전 점검 기준',
+    url: 'https://www.energy.gov/eere/amo/energy-savings-assessments',
+  },
+  {
+    title: 'Equipment Maintenance Best Practices',
+    desc: '부하 이상·전원 품질·설비 점검 근거',
+    url: 'https://www.energy.gov/eere/amo/advanced-manufacturing-office',
+  },
+];
+
+function getRagDocs(report) {
+  return report?.ragDocs?.length ? report.ragDocs : DEFAULT_RAG_DOCS;
+}
+
 // ─── Gemini generate button ────────────────────────────────
 function GeminiButton({ onGenerate, loading, source, language }) {
   const isGemini = source === 'gemini';
@@ -205,6 +227,8 @@ function GeminiButton({ onGenerate, loading, source, language }) {
 
 // ─── Report body (shared by static and generated reports) ──
 function ReportBody({ report, t }) {
+  const ragDocs = getRagDocs(report);
+
   return (
     <>
       {/* Header + Summary */}
@@ -469,7 +493,7 @@ function ReportBody({ report, t }) {
       </div>
 
       {/* RAG Evidence Documents */}
-      {report.ragDocs && report.ragDocs.length > 0 && (
+      {ragDocs.length > 0 && (
         <div style={{ flexShrink: 0 }}>
           <h4
             style={{
@@ -488,7 +512,7 @@ function ReportBody({ report, t }) {
             RAG 근거 문서
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            {report.ragDocs.map((doc, i) => (
+            {ragDocs.map((doc, i) => (
               <a
                 key={i}
                 href={doc.url}
@@ -550,6 +574,7 @@ function buildDocxDocument(report, event, language, source) {
   const equip = event?.equipment || report?.title || 'AI Report';
   const evTime = event?.time || '-';
   const stamp = new Date().toLocaleString(language === 'ko' ? 'ko-KR' : 'en-US');
+  const ragDocs = getRagDocs(report);
   const ch = [];
 
   ch.push(new Paragraph({ text: l.title, heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER, spacing: { after: 120 } }));
@@ -590,9 +615,9 @@ function buildDocxDocument(report, event, language, source) {
   });
   ch.push(new Paragraph({ spacing: { after: 200 }, children: [] }));
 
-  if (report?.ragDocs?.length) {
+  if (ragDocs.length) {
     ch.push(new Paragraph({ text: l.rag, heading: HeadingLevel.HEADING_3, spacing: { before: 100, after: 80 } }));
-    report.ragDocs.forEach((doc, i) => {
+    ragDocs.forEach((doc, i) => {
       ch.push(
         new Paragraph({ spacing: { after: 20 }, children: [
           new TextRun({ text: `${i + 1}. `, bold: true, size: 20 }), new TextRun({ text: doc.title || '-', bold: true, size: 20 }),

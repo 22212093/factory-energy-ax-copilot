@@ -72,11 +72,11 @@ const notifications = {
 
 const settingsData = {
   ko: [
-    { icon: 'database', label: '데이터 소스', value: '가상 스마트미터' },
-    { icon: 'cpu', label: 'AI 모드', value: 'Mock Agent' },
-    { icon: 'gemini', label: 'Gemini API', value: '확장 예정' },
-    { icon: 'cloud', label: 'Cloud Run', value: '배포 예정' },
-    { icon: 'activity', label: '확장', value: 'ESP32 / MQTT / RAG' },
+    { icon: 'database', label: '데이터 소스', value: 'XIAO ESP32-C3 + 가상 스마트미터' },
+    { icon: 'cpu', label: 'AI 모드', value: 'Gemini API + Local Rule' },
+    { icon: 'gemini', label: 'Gemini API', value: '리포트 생성 연동' },
+    { icon: 'cloud', label: 'Cloud Run', value: 'Telemetry API 배포·검증 완료' },
+    { icon: 'activity', label: '확장', value: 'Firestore / Vector Search' },
   ],
   en: [
     { icon: 'database', label: 'Data Source', value: 'Virtual Smart Meter' },
