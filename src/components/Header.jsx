@@ -469,7 +469,7 @@ const currentLang = languageOptions.find((l) => l.code === language);
         </div>
         <div className="min-w-0">
           <h1 className="text-[13px] sm:text-sm font-bold text-white tracking-tight leading-normal truncate">
-            Factory Energy AX Copilot
+            {t.appName || 'Industrial Power Inspection AI System'}
           </h1>
           <p className="text-[11px] sm:text-xs font-semibold leading-normal truncate" style={{ color: '#c8d2e8' }}>
             {t.subtitle}

@@ -3,7 +3,8 @@
 
 const translations = {
   ko: {
-    subtitle: '산업현장 에너지 운영 AX 코파일럿',
+    appName: '산업현장 전력 점검 AI 시스템',
+    subtitle: '전력 이상감지 및 AI 점검 보고서 자동화',
     description: '전력 점검·원인 분석·보고 업무를 AI Agent로 전환',
     systemOnline: '시스템 정상',
     liveStatus: '실시간 감시 중',
@@ -72,13 +73,14 @@ const translations = {
     noNotifs: '새 알림 없음',
 
     // Footer
-    footerVersion: 'Factory Energy AX Copilot v1.0 — 프로토타입 데모',
+    footerVersion: '산업현장 전력 점검 AI 시스템 v1.0 — 프로토타입 데모',
     lastSync: '마지막 동기화: 방금',
     scalabilityBadge: 'Web App · Mobile App 확장 가능',
   },
 
   en: {
-    subtitle: 'Industrial Energy Operations AX Copilot',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'AI Agent for power inspection, root-cause analysis & reporting',
     systemOnline: 'System Online',
     liveStatus: 'Live Monitoring',
@@ -140,13 +142,14 @@ const translations = {
     notifTitle: 'Notifications',
     noNotifs: 'No new notifications',
 
-    footerVersion: 'Factory Energy AX Copilot v1.0 — Prototype Demo',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — Prototype Demo',
     lastSync: 'Last sync: just now',
     scalabilityBadge: 'Scalable to Web & Mobile App',
   },
 
   ja: {
-    subtitle: '産業現場エネルギー運用 AX コパイロット',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: '電力点検・原因分析・報告業務をAI Agentに転換',
     systemOnline: 'システム正常',
     liveStatus: 'リアルタイム監視中',
@@ -201,13 +204,14 @@ const translations = {
     settingsReset: 'デフォルトに戻す',
     notifTitle: '通知',
     noNotifs: '新しい通知はありません',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — プロトタイプデモ',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — プロトタイプデモ',
     lastSync: '最終同期: たった今',
     scalabilityBadge: 'Web・モバイルアプリ拡張可能',
   },
 
   zh: {
-    subtitle: '工业现场能源运营 AX 副驾驶',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: '通过AI Agent转型电力巡检、根因分析与报告业务',
     systemOnline: '系统正常',
     liveStatus: '实时监控中',
@@ -262,13 +266,14 @@ const translations = {
     settingsReset: '恢复默认值',
     notifTitle: '通知',
     noNotifs: '暂无新通知',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — 原型演示',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — 原型演示',
     lastSync: '最后同步: 刚刚',
     scalabilityBadge: '可扩展至 Web / 移动端应用',
   },
 
   fr: {
-    subtitle: "Copilote AX d'énergie industrielle",
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'Agent IA pour inspection, analyse des causes et reporting',
     systemOnline: 'Système en ligne',
     liveStatus: 'Surveillance en direct',
@@ -323,13 +328,14 @@ const translations = {
     settingsReset: 'Valeurs par défaut restaurées',
     notifTitle: 'Notifications',
     noNotifs: 'Aucune nouvelle notification',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — Démo prototype',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — Démo prototype',
     lastSync: "Dernière sync : à l'instant",
     scalabilityBadge: 'Évolutif vers Web & Mobile',
   },
 
   es: {
-    subtitle: 'Copiloto de Operaciones de Energía Industrial AX',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'Agente de IA para inspección de energía, análisis y informes',
     systemOnline: 'Sistema en línea',
     liveStatus: 'Monitoreo en vivo',
@@ -384,13 +390,14 @@ const translations = {
     settingsReset: 'Valores predeterminados restaurados',
     notifTitle: 'Notificaciones',
     noNotifs: 'No hay nuevas notificaciones',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — Demostración',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — Demostración',
     lastSync: 'Última sinc.: hace un momento',
     scalabilityBadge: 'Escalable a Web y Móvil',
   },
 
   de: {
-    subtitle: 'AX-Copilot für industrielle Energiebetriebe',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'KI-Agent für Leistungsinspektion, Ursachenanalyse und Berichterstattung',
     systemOnline: 'System Online',
     liveStatus: 'Live-Überwachung',
@@ -445,13 +452,14 @@ const translations = {
     settingsReset: 'Auf Standardwerte zurückgesetzt',
     notifTitle: 'Benachrichtigungen',
     noNotifs: 'Keine neuen Benachrichtigungen',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — Prototyp-Demo',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — Prototyp-Demo',
     lastSync: 'Letzte Synchronisation: gerade eben',
     scalabilityBadge: 'Skalierbar auf Web & Mobile App',
   },
 
   vi: {
-    subtitle: 'AX Copilot vận hành năng lượng công nghiệp',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'Agent AI để kiểm tra điện, phân tích nguyên nhân và báo cáo',
     systemOnline: 'Hệ thống trực tuyến',
     liveStatus: 'Giám sát trực tiếp',
@@ -506,13 +514,14 @@ const translations = {
     settingsReset: 'Đặt lại mặc định',
     notifTitle: 'Thông báo',
     noNotifs: 'Không có thông báo mới',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — Demo nguyên mẫu',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — Demo nguyên mẫu',
     lastSync: 'Đồng bộ cuối: vừa xong',
     scalabilityBadge: 'Mở rộng Web & Mobile App',
   },
 
   id: {
-    subtitle: 'Copilot Operasi Energi Industri AX',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'Agen AI untuk inspeksi daya, analisis penyebab utama & pelaporan',
     systemOnline: 'Sistem Aktif',
     liveStatus: 'Pemantauan Langsung',
@@ -567,13 +576,14 @@ const translations = {
     settingsReset: 'Dikembalikan ke default',
     notifTitle: 'Notifikasi',
     noNotifs: 'Tidak ada notifikasi baru',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — Demo Prototipe',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — Demo Prototipe',
     lastSync: 'Sinkronisasi terakhir: baru saja',
     scalabilityBadge: 'Skalabel ke Web & Aplikasi Seluler',
   },
 
   th: {
-    subtitle: 'โคไพลอตสำหรับระบบจัดการพลังงานอุตสาหกรรม AX',
+    appName: 'Industrial Power Inspection AI System',
+    subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'ตัวแทน AI สำหรับการตรวจสอบพลังงาน การวิเคราะห์สาเหตุหลัก และการรายงาน',
     systemOnline: 'ระบบออนไลน์',
     liveStatus: 'การตรวจสอบสด',
@@ -628,7 +638,7 @@ const translations = {
     settingsReset: 'คืนค่าเริ่มต้น',
     notifTitle: 'การแจ้งเตือน',
     noNotifs: 'ไม่มีการแจ้งเตือนใหม่',
-    footerVersion: 'Factory Energy AX Copilot v1.0 — สาธิตต้นแบบ',
+    footerVersion: 'Industrial Power Inspection AI System v1.0 — สาธิตต้นแบบ',
     lastSync: 'ซิงค์ล่าสุด: เมื่อครู่',
     scalabilityBadge: 'รองรับการขยายเป็นแอปเว็บและมือถือ',
   },

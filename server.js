@@ -181,7 +181,7 @@ app.get("/{*path}", (_req, res) => {
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   const hasKey = !!GEMINI_API_KEY;
-  console.log(`\n🚀  Factory Energy AX Copilot`);
+  console.log(`\n🚀  산업현장 전력 점검 AI 시스템`);
   console.log(`   http://localhost:${PORT}`);
   console.log(`   Gemini API: ${hasKey ? "✅ connected" : "⚠️  no key — mock mode"}\n`);
 });
