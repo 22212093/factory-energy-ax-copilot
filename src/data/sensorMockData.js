@@ -64,17 +64,17 @@ export function getMockFrame(profile, idx) {
 export const RAG_DOCUMENTS = [
   {
     title:   'IEC 60947-4-1 — 전동기 기동기 및 과전류 보호',
-    titleEn: 'IEC 60947-4-1 — Motor Starters & Overcurrent Protection',
+    titleEn: 'IEC 60947-4-1 — Motor starters and overcurrent protection',
     url:     'https://webstore.iec.ch/publication/4051',
     desc:    '과전류 임계값 설정 근거',
-    descEn:  'Overcurrent threshold standard reference',
+    descEn:  'Overcurrent threshold reference',
   },
   {
     title:   'ACS712 Datasheet — Allegro MicroSystems',
     titleEn: 'ACS712 Datasheet — Allegro MicroSystems',
     url:     'https://www.allegromicro.com/en/products/sense/current-sensor-ics/zero-to-fifty-amp-integrated-conductor-sensor-ics/acs712',
     desc:    '전류 센서 정밀도 ±1.5% 및 응답속도 근거',
-    descEn:  'Current sensor ±1.5% accuracy & response time',
+    descEn:  'Current sensor ±1.5% accuracy and response-time reference',
   },
   {
     title:   'KS C IEC 61000-4-5 — 서지 내성 시험',
@@ -129,8 +129,8 @@ export const XIAO_ANOMALY_REPORTS = {
     savings:    '3~6%',
     confidence: 86,
     ragDocs: [
-      { title: 'IEC 60947-4-1 — Motor Starters & Overcurrent Protection', desc: 'Overcurrent threshold standard reference', url: 'https://webstore.iec.ch/publication/4051' },
-      { title: 'ACS712 Datasheet — Allegro MicroSystems', desc: 'Current sensor ±1.5% accuracy & response time', url: 'https://www.allegromicro.com/en/products/sense/current-sensor-ics/zero-to-fifty-amp-integrated-conductor-sensor-ics/acs712' },
+      { title: 'IEC 60947-4-1 — Motor starters and overcurrent protection', desc: 'Overcurrent threshold reference', url: 'https://webstore.iec.ch/publication/4051' },
+      { title: 'ACS712 Datasheet — Allegro MicroSystems', desc: 'Current sensor ±1.5% accuracy and response-time reference', url: 'https://www.allegromicro.com/en/products/sense/current-sensor-ics/zero-to-fifty-amp-integrated-conductor-sensor-ics/acs712' },
       { title: 'KS C IEC 61000-4-5 — Surge Immunity Test', desc: 'Surge detection threshold reference', url: 'https://www.kats.go.kr/main.do' },
     ],
   },

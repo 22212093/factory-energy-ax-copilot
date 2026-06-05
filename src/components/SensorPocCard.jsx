@@ -63,7 +63,7 @@ function MiniCell({ label, value, color }) {
 }
 
 // ── 메인 컴포넌트 ──────────────────────────────────────
-export default function SensorPocCard({ isMobile, onAnomaly }) {
+export default function SensorPocCard({ isMobile, onAnomaly, language = 'ko' }) {
   // ── Web Serial ──────────────────────────────────────
   const { isSupported, isConnected, telemetry, connect, disconnect, error: serialError } = useWebSerial();
 
@@ -86,6 +86,40 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
   // 실제 연결된 경우 telemetry 우선, 아니면 mockFrame
   const activeFrame = (isConnected && telemetry) ? telemetry : mockFrame;
   const isLive      = isConnected && !!telemetry;
+  const isEnglish   = language === 'en';
+  const labels = isEnglish ? {
+    loadValue: 'SG90 Servo / low-voltage load',
+    connected: 'XIAO connected · 115200 baud',
+    supportedDisconnected: 'Web Serial supported · disconnected',
+    unsupportedDemo: 'Web Serial unsupported — Demo mode',
+    disconnect: 'Disconnect',
+    connect: 'Connect XIAO',
+    status: 'Status',
+    servo: 'Servo',
+    threshold: 'Threshold',
+    inject: 'D4 — Inject anomaly current',
+    stop: 'D3 — Stop device',
+    resume: 'D3 — Resume device',
+    stopDone: 'Admin stop action completed · follow-up inspection pending',
+    copied: 'Copied!',
+    ragTitle: 'RAG evidence documents',
+  } : {
+    loadValue: 'SG90 Servo / 저전압',
+    connected: 'XIAO 연결됨 · 115200 baud',
+    supportedDisconnected: 'Web Serial 지원 · 미연결',
+    unsupportedDemo: 'Web Serial 미지원 — Demo 모드',
+    disconnect: '연결 해제',
+    connect: 'Connect XIAO',
+    status: '상태',
+    servo: '서보',
+    threshold: '임계값',
+    inject: 'D4 — 이상 전류 주입',
+    stop: 'D3 — 장치 정지',
+    resume: 'D3 — 장치 재가동',
+    stopDone: '관리자 장치 정지 조치 완료 · 후속 점검 대기',
+    copied: '복사됨!',
+    ragTitle: 'RAG 근거 문서',
+  };
 
   const I_A    = activeFrame?.I_A    ?? 0;
   const status = activeFrame?.status ?? 'normal';
@@ -150,8 +184,10 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
         equipment:   'XIAO ESP32-C3',
         typeKey:     'sensorCurrent',
         displayName: '센서 전류 이상',
+        displayNameEn: 'Sensor Current Anomaly',
         severity:    'HIGH',
         description: 'ACS712 5A 센서에서 단일 저전압 부하 전류가 임계값을 초과했습니다.',
+        descriptionEn: 'ACS712 5A sensor current exceeded the threshold on a single low-voltage load.',
         source:      'XIAO ESP32-C3 + ACS712 5A',
         currentA:    Number(currentA.toFixed(3)),
         threshold:   WARNING_THRESHOLD,
@@ -291,7 +327,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
         <InfoRow icon={<Cpu size={10} />}      label="Device"  value="XIAO ESP32-C3" />
         <InfoRow icon={<Zap size={10} />}      label="Sensor"  value="ACS712 5A (±1.5%)" />
-        <InfoRow icon={<Activity size={10} />} label="Load"    value="SG90 Servo / 저전압" />
+        <InfoRow icon={<Activity size={10} />} label="Load"    value={labels.loadValue} />
       </div>
 
       {/* ───────────────────────────────────────────────
@@ -313,10 +349,10 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>
             {isConnected
-              ? 'XIAO 연결됨 · 115200 baud'
+              ? labels.connected
               : isSupported
-                ? 'Web Serial 지원 · 미연결'
-                : 'Web Serial 미지원 — Demo 모드'}
+                ? labels.supportedDisconnected
+                : labels.unsupportedDemo}
           </span>
           {serialError && (
             <span style={{ fontSize: '8.5px', color: '#f87171', flexShrink: 0 }}>
@@ -348,7 +384,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
           }}
         >
           {isConnected ? <WifiOff size={10} /> : <Wifi size={10} />}
-          {isConnected ? '연결 해제' : 'Connect XIAO'}
+          {isConnected ? labels.disconnect : labels.connect}
         </button>
       </div>
 
@@ -392,12 +428,12 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
         {/* 3칸 그리드: 상태 / 서보 / 임계값 */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
           <MiniCell
-            label="상태"
+            label={labels.status}
             value={status === 'stopped' ? '● Stopped' : status === 'alert' ? '● Alert' : status === 'warning' ? '● Warning' : '● Normal'}
             color={statusColor}
           />
-          <MiniCell label="서보" value={servo} color="#94a3b8" />
-          <MiniCell label="임계값" value={`${WARNING_THRESHOLD} A`} color="#6b7280" />
+          <MiniCell label={labels.servo} value={servo} color="#94a3b8" />
+          <MiniCell label={labels.threshold} value={`${WARNING_THRESHOLD} A`} color="#6b7280" />
         </div>
       </div>
 
@@ -420,7 +456,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.10)'; }}
         >
           <Zap size={11} />
-          D4 — 이상 전류 주입
+          {labels.inject}
         </button>
 
         {/* D3: 장치 정지 */}
@@ -438,7 +474,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
           onMouseLeave={e => { e.currentTarget.style.background = 'rgba(99,102,241,0.10)'; }}
         >
           <StopCircle size={11} />
-          {isStopped ? 'D3 — 장치 재가동' : 'D3 — 장치 정지'}
+          {isStopped ? labels.resume : labels.stop}
         </button>
       </div>
 
@@ -450,7 +486,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
           background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)',
           borderRadius: '6px', padding: '6px 10px',
         }}>
-          🔵 {d3Status.time} — 관리자 장치 정지 조치 완료 · 후속 점검 대기
+          🔵 {d3Status.time} — {labels.stopDone}
         </div>
       )}
 
@@ -479,7 +515,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
             }}
           >
             {copied ? <Check size={9} /> : <Copy size={9} />}
-            {copied ? '복사됨!' : 'Copy JSON'}
+            {copied ? labels.copied : 'Copy JSON'}
           </button>
         </div>
 
@@ -509,7 +545,7 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '6px' }}>
           <BookOpen size={10} style={{ color: '#64748b' }} />
           <span style={{ fontSize: '10px', fontWeight: 700, color: '#94a3b8', letterSpacing: '0.03em' }}>
-            RAG 근거 문서
+            {labels.ragTitle}
           </span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -531,10 +567,10 @@ export default function SensorPocCard({ isMobile, onAnomaly }) {
               <ExternalLink size={9} style={{ color: '#475569', flexShrink: 0, marginTop: '2px' }} />
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: '9px', fontWeight: 700, color: '#c8d2e8', lineHeight: 1.35 }}>
-                  {doc.title}
+                    {isEnglish ? (doc.titleEn || doc.title) : doc.title}
                 </div>
                 <div style={{ fontSize: '8.5px', fontWeight: 500, color: '#64748b', marginTop: '1px' }}>
-                  {doc.desc}
+                    {isEnglish ? (doc.descEn || doc.desc) : doc.desc}
                 </div>
               </div>
             </a>

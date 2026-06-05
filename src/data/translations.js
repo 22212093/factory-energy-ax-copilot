@@ -16,6 +16,7 @@ const translations = {
     anomalyEvents: '이상 이벤트',
     aiReports: 'AI 리포트',
     ready: '준비됨',
+    docxAvailable: 'DOCX 생성 가능',
 
     // Power chart
     realtimePower: '실시간 전력 사용량',
@@ -34,6 +35,7 @@ const translations = {
     repetitivePattern: '반복 사용 패턴',
     coolingLoad: '냉각 부하 증가',
     standbyPower: '대기전력 과다',
+    sensorCurrent: '센서 전류 이상',
 
     // AI Report
     aiAnalysisReport: 'AI 분석 리포트',
@@ -42,6 +44,7 @@ const translations = {
     expectedSavings: '예상 절감 효과',
     rootCauseAnalysis: 'AI 추정 원인',
     recommendedActions: '권장 조치',
+    ragEvidenceDocuments: 'RAG 근거 문서',
     confirmAction: '조치 확인',
     immediate: '즉시',
     today: '오늘',
@@ -82,7 +85,7 @@ const translations = {
     appName: 'Industrial Power Inspection AI System',
     subtitle: 'Power anomaly detection and AI inspection report automation',
     description: 'AI Agent for power inspection, root-cause analysis & reporting',
-    systemOnline: 'System Online',
+    systemOnline: 'System normal',
     liveStatus: 'Live Monitoring',
     vsYesterday: 'vs yesterday',
 
@@ -91,6 +94,7 @@ const translations = {
     anomalyEvents: 'Anomaly Events',
     aiReports: 'AI Reports',
     ready: 'Ready',
+    docxAvailable: 'DOCX ready',
 
     realtimePower: 'Real-time Power Consumption',
     rollingWindow: '30-minute rolling window · kW',
@@ -107,6 +111,7 @@ const translations = {
     repetitivePattern: 'Repetitive Pattern',
     coolingLoad: 'Cooling Load Rise',
     standbyPower: 'Standby Power',
+    sensorCurrent: 'Sensor Current Anomaly',
 
     aiAnalysisReport: 'AI Analysis Report',
     selectEventPrompt: 'Select an anomaly event to view the AI-generated analysis',
@@ -114,12 +119,13 @@ const translations = {
     expectedSavings: 'Expected Savings',
     rootCauseAnalysis: 'Root Cause Analysis',
     recommendedActions: 'Recommended Actions',
+    ragEvidenceDocuments: 'RAG evidence documents',
     confirmAction: 'Confirm Action',
     immediate: 'Immediate',
     today: 'Today',
     thisWeek: 'This Week',
 
-    settingsTitle: 'System Settings',
+    settingsTitle: 'System settings',
     liveModeLabel: 'Live Mode',
     intervalLabel: 'Detection Interval',
     thresholdLabel: 'Threshold (kW)',

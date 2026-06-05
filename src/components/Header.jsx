@@ -79,11 +79,11 @@ const settingsData = {
     { icon: 'activity', label: '확장', value: 'Firestore / Vector Search' },
   ],
   en: [
-    { icon: 'database', label: 'Data Source', value: 'Virtual Smart Meter' },
-    { icon: 'cpu', label: 'AI Mode', value: 'Mock Agent' },
-    { icon: 'gemini', label: 'Gemini API', value: 'Coming Soon' },
-    { icon: 'cloud', label: 'Cloud Run', value: 'Deployment Planned' },
-    { icon: 'activity', label: 'Expansion', value: 'ESP32 / MQTT / RAG' },
+    { icon: 'database', label: 'Data source', value: 'XIAO ESP32-C3 + virtual smart meter' },
+    { icon: 'cpu', label: 'AI mode', value: 'Gemini API + Local Rule' },
+    { icon: 'gemini', label: 'Gemini API', value: 'Report generation connected' },
+    { icon: 'cloud', label: 'Cloud Run', value: 'Telemetry API deployed and verified' },
+    { icon: 'activity', label: 'Extension', value: 'Firestore / Vector Search' },
   ],
   ja: [
     { icon: 'database', label: 'データソース', value: '仮想スマートメーター' },
@@ -148,7 +148,7 @@ const notifTitles = {
   es: 'Notificaciones', de: 'Benachrichtigungen', vi: 'Thông báo', id: 'Notifikasi', th: 'การแจ้งเตือน'
 };
 const settingsTitles = {
-  ko: '시스템 설정', en: 'System Settings', ja: 'システム設定', zh: '系统设置', fr: 'Paramètres',
+  ko: '시스템 설정', en: 'System settings', ja: 'システム設定', zh: '系统设置', fr: 'Paramètres',
   es: 'Configuración', de: 'Systemeinstellungen', vi: 'Cài đặt hệ thống', id: 'Pengaturan Sistem', th: 'การตั้งค่าระบบ'
 };
 

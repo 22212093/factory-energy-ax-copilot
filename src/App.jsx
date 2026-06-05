@@ -482,8 +482,8 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
                 metric = {
                   ...m,
                   value: String(events.length),
-                  trend: '실시간',
-                  trendKey: undefined,
+                  trend: undefined,
+                  trendKey: 'live',
                   trendUp: false,
                   suffixText: t.detectedToday || '오늘 감지됨',
                 };
@@ -496,7 +496,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
                   trend: t.ready || '준비됨',
                   trendKey: undefined,
                   trendUp: false,
-                  suffixText: 'DOCX 생성 가능',
+                  suffixText: t.docxAvailable || 'DOCX 생성 가능',
                 };
               }
 
@@ -525,7 +525,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
           </div>
 
           {/* Sensor PoC — 좌측 컬럼 하단 (PowerChart 아래) */}
-          <SensorPocCard isMobile={isMobile} onAnomaly={handleSensorAnomaly} />
+          <SensorPocCard isMobile={isMobile} onAnomaly={handleSensorAnomaly} language={language} />
         </div>
 
         {/* ── Right column ── */}
@@ -558,6 +558,7 @@ const template = eventTemplates[Math.floor(Math.random() * eventTemplates.length
               selectedId={selectedEventId}
               onSelect={setSelectedEventId}
               t={t}
+              language={language}
             />
           </div>
 

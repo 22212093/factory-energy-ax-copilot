@@ -53,7 +53,7 @@ const severityStyles = {
   },
 };
 
-export default function AnomalyList({ events, selectedId, onSelect, t }) {
+export default function AnomalyList({ events, selectedId, onSelect, t, language = 'ko' }) {
   const sortedEvents = sortEventsByTimeDesc(events);
   return (
     <div
@@ -126,7 +126,9 @@ export default function AnomalyList({ events, selectedId, onSelect, t }) {
         {sortedEvents.map((event, idx) => {
           const severity = severityStyles[event.severity];
           const isSelected = selectedId === event.id;
-          const eventType = event.displayName || t[event.typeKey] || event.typeKey;
+          const eventType = language === 'en'
+            ? (event.displayNameEn || t[event.typeKey] || event.typeKey)
+            : (event.displayName || t[event.typeKey] || event.typeKey);
 
           return (
             <button

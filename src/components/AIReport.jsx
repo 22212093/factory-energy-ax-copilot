@@ -49,22 +49,33 @@ const DEFAULT_RAG_DOCS = [
   {
     title: 'ISO 50001 Energy Management',
     desc: '에너지 성과 개선 및 운영관리 기준',
+    descEn: 'Energy performance improvement and operations management standard',
     url: 'https://www.iso.org/iso-50001-energy-management.html',
   },
   {
     title: 'Industrial Energy Audit Checklist',
     desc: '설비별 전력 낭비·공회전 점검 기준',
+    descEn: 'Equipment-level power waste and idle-run inspection criteria',
     url: 'https://www.energy.gov/eere/amo/energy-savings-assessments',
   },
   {
     title: 'Equipment Maintenance Best Practices',
     desc: '부하 이상·전원 품질·설비 점검 근거',
+    descEn: 'Reference for load anomalies, power quality, and equipment inspection',
     url: 'https://www.energy.gov/eere/amo/advanced-manufacturing-office',
   },
 ];
 
-function getRagDocs(report) {
-  return report?.ragDocs?.length ? report.ragDocs : DEFAULT_RAG_DOCS;
+function getRagDocs(report, language = 'ko') {
+  const docs = report?.ragDocs?.length ? report.ragDocs : DEFAULT_RAG_DOCS;
+
+  if (language !== 'en') return docs;
+
+  return docs.map((doc) => ({
+    ...doc,
+    title: doc.titleEn || doc.title,
+    desc: doc.descEn || doc.desc,
+  }));
 }
 
 // ─── Gemini generate button ────────────────────────────────
@@ -226,8 +237,8 @@ function GeminiButton({ onGenerate, loading, source, language }) {
 }
 
 // ─── Report body (shared by static and generated reports) ──
-function ReportBody({ report, t }) {
-  const ragDocs = getRagDocs(report);
+function ReportBody({ report, t, language }) {
+  const ragDocs = getRagDocs(report, language);
 
   return (
     <>
@@ -509,7 +520,7 @@ function ReportBody({ report, t }) {
             }}
           >
             <BookOpen size={10} style={{ color: '#64748b' }} />
-            RAG 근거 문서
+            {t.ragEvidenceDocuments || 'RAG Evidence Documents'}
           </h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {ragDocs.map((doc, i) => (
@@ -562,7 +573,10 @@ const docxLabels = {
   id: { btn: 'Unduh DOCX', title: 'Industrial Power Inspection AI System', src: 'Sumber', equip: 'Peralatan', time: 'Waktu', sev: 'Keparahan', conf: 'Kepercayaan', save: 'Penghematan', sum: 'Ringkasan', cause: 'Penyebab', act: 'Tindakan', rag: 'Dokumen RAG', foot: 'Power anomaly detection and AI inspection report automation \u00b7 Dibuat oleh Industrial Power Inspection AI System' },
 };
 
-const priorityLabels = { immediate: '\uc989\uc2dc / Immediate', today: '\uc624\ub298 / Today', thisWeek: '\uae08\uc8fc / This Week' };
+const priorityLabels = {
+  ko: { immediate: '\uc989\uc2dc / Immediate', today: '\uc624\ub298 / Today', thisWeek: '\uae08\uc8fc / This Week' },
+  en: { immediate: 'Immediate', today: 'Today', thisWeek: 'This Week' },
+};
 
 function safeFileNamePart(v) {
   return String(v || 'report').replace(/[\\\\/:*?"<>|]/g, '_').replace(/\\s+/g, '_').slice(0, 40);
@@ -574,7 +588,7 @@ function buildDocxDocument(report, event, language, source) {
   const equip = event?.equipment || report?.title || 'AI Report';
   const evTime = event?.time || '-';
   const stamp = new Date().toLocaleString(language === 'ko' ? 'ko-KR' : 'en-US');
-  const ragDocs = getRagDocs(report);
+  const ragDocs = getRagDocs(report, language);
   const ch = [];
 
   ch.push(new Paragraph({ text: l.title, heading: HeadingLevel.HEADING_1, alignment: AlignmentType.CENTER, spacing: { after: 120 } }));
@@ -607,7 +621,7 @@ function buildDocxDocument(report, event, language, source) {
 
   ch.push(new Paragraph({ text: l.act, heading: HeadingLevel.HEADING_3, spacing: { before: 100, after: 80 } }));
   (report?.actions || []).forEach((a, i) => {
-    const pL = priorityLabels[a.priority] || a.priority || '';
+    const pL = (priorityLabels[language] || priorityLabels.en)[a.priority] || a.priority || '';
     ch.push(new Paragraph({ spacing: { after: 40 }, children: [
       new TextRun({ text: `${i + 1}. `, bold: true, size: 20 }), new TextRun({ text: a.label || '-', size: 20 }),
       new TextRun({ text: pL ? `  [${pL}]` : '', italics: true, size: 18, color: '666666' }),
@@ -841,7 +855,7 @@ export default function AIReport({ report: staticReport, event, language, t, onR
 
       {/* Report content — scrollable */}
       <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <ReportBody report={activeReport} t={t} />
+        <ReportBody report={activeReport} t={t} language={language} />
       </div>
     </div>
   );
